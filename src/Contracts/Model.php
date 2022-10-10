@@ -1,6 +1,6 @@
 <?php
 
-    namespace BbqOrders\Contracts;
+    namespace BbqData\Contracts;
 
     use Illuminate\Database\Capsule\Manager as Capsule;
     use Illuminate\Database\Eloquent\Model as OriginalModel;
