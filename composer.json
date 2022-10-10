@@ -1,0 +1,20 @@
+{
+    "name": "bbquality/data",
+    "description": "This is a collection of the shared database models for Bbquality and Bbquality's admin",
+    "homepage": "https://www.bbquality.nl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luc Princen",
+            "email": "hi@lucp.nl"
+        }
+    ],
+    "require": {
+        "php": "^7.2 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BbqData": "src/"
+        }
+    }
+}

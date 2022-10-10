@@ -1,0 +1,560 @@
+<?php
+
+    namespace BbqData\Models;
+
+    use Carbon\Carbon;
+    use BbqData\Helpers\Price;
+    use BbqData\Contracts\Model;
+    use BbqData\Models\Casts\Json;
+    use BbqShipping\Helpers\Shipping;
+    use BbqData\Models\Scopes\NotCartScope;
+
+    class Order extends Model{
+        
+    
+        /**
+         * Order table
+         *
+         * @var string
+         */
+        protected $table = 'orders';
+
+
+        /**
+         * Guarded fields
+         *
+         * @var array
+         */
+        protected $guarded = ['id', 'customer_id'];
+        
+        /**
+         * Cast the object field as a json
+         *
+         * @var array
+         */
+        protected $casts = [
+            'shipping_info' => Json::class,
+        ];
+        
+        /**
+         * An order has rows:
+         *
+         * @return void
+         */
+        public function rows()
+        {
+            return $this->hasMany('BbqData\Models\OrderRow');
+
+        }
+
+
+        /**
+         * And order has a customer:
+         *
+         * @return void
+         */
+        public function customer()
+        {
+            return $this->belongsTo('BbqData\Models\Customer');
+        }
+
+        /**
+         * An order has a payment:
+         *
+         * @return void
+         */
+        public function payment()
+        {
+            return $this->hasOne('BbqData\Models\Payment');
+        }
+
+
+        /**
+         * An order may have many coupons
+         *
+         * @return void
+         */
+        public function coupons()
+        {
+            return $this->belongsToMany('BbqData\Models\Coupon', 'bbquality_coupon_order' )
+                        ->withPivot('status', 'amount', 'created_at', 'updated_at')
+                        ->withTimestamps();
+        }
+
+        /**
+         * Set this orders status, by the status of the payment
+         *
+         * @return String
+         */
+        public function setStatusByPayment()
+        {            
+            switch( $this->payment->status ){
+                case 'paid':
+                    $this->status = 'processing';
+                    break;
+                case 'pending':
+                case 'authorized':
+                    $this->status = 'on-hold';
+                    break;
+                case 'expired':
+                case 'failed':
+                    $this->status = 'canceled';
+                    break;
+                case 'refund':
+                case 'chargedback':
+                case 'partial_refunded':
+                    $this->status = 'refund';
+                    break;
+                default:
+                    //default: just take the payment's status. Valid for:
+                    //open, cancelled
+                    $this->status = $this->payment->status;
+                    break;
+            }
+
+            return $this;
+        }
+        
+
+
+        /**
+         * Check if this order has open notifications it needs to send
+         *
+         * @return boolean
+         */
+        public function hasOpenNotifications()
+        {
+            if( 
+                $this->buyer_notifications_sent == false ||
+                $this->seller_notifications_sent == false
+            ){
+                return true;
+            }
+
+            return false;
+        }
+
+        
+        /**
+         * Return the orders' totals
+         *
+         * @return void
+         */
+        public function getTotals( $raw = false )
+        {
+            $subtotal = 0;
+            $vat = 0;
+
+            foreach( $this->rows as $row ){
+                if( !isset( $row->price ) || is_null( $row->price ) ){
+                    continue;
+                }
+                
+                $price = ( $row->price * $row->quantity );
+                $subtotal += $price;
+                $vat += Price::vat( $price, $row->vat );
+            }
+
+            //shipping:
+            $shipping = $this->shipping['price_raw'] ?? 0;
+
+            //discount & gift certificates
+            $discount = $this->discount_total * -1;
+            $gift_certificates = $this->gift_certificates_total * -1;
+
+
+            $total = $subtotal + $shipping + $discount + $gift_certificates;
+
+            if( $total < 0 ){
+                $total = 0;
+            }
+
+            //if we want just the raw numbers:
+            if( $raw ){
+                return [
+                    'subtotal' => $subtotal,
+                    'shipping' => $shipping,
+                    'vat' => $vat,
+                    'discount' => $discount,
+                    'gift-certificates' => $gift_certificates,
+                    'total' => $total,
+                ];
+            }
+
+            //else, we're looking for formatted html:
+            $totals = [
+                'Subtotaal'         => Price::format( $subtotal ),
+                'Waarvan BTW'       => Price::format( $vat ),
+                'Verzendkosten'     => Price::format( $shipping )
+            ];
+
+            if( $discount !== 0 ){
+                $totals['Korting'] = Price::format( $discount );
+            }
+
+            if( $gift_certificates !== 0 ){
+                $totals['Cadeaukaarten'] = Price::format( $gift_certificates );
+            }
+
+            $totals['Totaal'] = Price::format( $total );
+            return $totals;
+            
+        }
+
+        /**
+         * Get the subtotal of certificate money
+         *
+         * @return float
+         */
+        public function getCertificateTotal()
+        {
+            $certificateTotal = 0;
+            $certificates = Coupon::getCertificateIds();
+
+            //check if this is a gift-cerificate:
+            foreach( $this->rows as $row ){
+                if( in_array( $row->product_id, $certificates ) ){
+                    $price = ( $row->price * $row->quantity );
+                    $certificateTotal += $price;
+                }
+            }
+
+            return $certificateTotal;
+        }
+
+        /**
+         * Reduce stocks:
+         *
+         * @return void
+         */
+        public function reduceStock()
+        {
+            foreach( $this->rows as $row ){
+                if( $row->stock_reduced == false ){
+                    $row->stock()->reduce( $row->quantity );
+                    $row->stock_reduced = true;
+                    $row->save();
+                }
+            }
+        }
+
+
+        /**
+         * Turn this orders status in a css class
+         *
+         * @return string
+         */
+        public function getBadgeAttribute()
+        {
+            switch( $this->status ){
+
+                case 'processing':
+                    return 'info';
+                    break;
+                case 'succesfull':
+                    return 'success';
+                    break;
+                case 'canceled':
+                case 'cancelled':
+                    return 'danger';
+                    break;
+                case 'on-hold':
+                case 'open':
+                case 'refund':
+                    return 'warning';
+                    break;
+                default:
+                    return $this->status;
+                    break;
+            }
+        }
+
+        /**
+         * Formatted delivery date:
+         *
+         * @return void
+         */
+        public function getDeliveryDateAttribute()
+        {
+            $time = $this->delivery_day;
+            return Carbon::createFromTimestamp( $time );
+        }
+
+
+        /**
+         * Return the shipping attribute
+         *
+         * @return Array
+         */
+        public function getShippingAttribute() 
+        {
+            $info = $this->shipping_info;
+            if( is_string( $info ) ){ 
+                return json_decode( $info, true );    
+            }
+
+            return $info;
+        }
+
+        /**
+         * Return the delivery time of an order
+         *
+         * @return string
+         */
+        public function getDeliveryTimeAttribute()
+        {
+            $pickup_day = $this->delivery_date->dayOfWeek;
+            $slug = $this->shipping['slug'];
+            $methods = Shipping::methods();
+            if( isset( $methods[ $slug ] ) && is_int( $pickup_day ) ){
+                return $methods[ $slug ]['availability'][ $pickup_day ];
+            }
+
+            return null;
+        }
+
+
+        /**
+         * Returns the current shipping state
+         *
+         * @return string
+         */
+        public function getShippingStateAttribute()
+        {
+            if( $this->delivery_day == strtotime( date( 'Y-m-d 00:00:00' ) ) && $this->label_path !== '' ){
+                return 'Onderweg';
+            }else if( $this->status == 'open' ){
+                return 'Onbekend';
+            }else if( $this->delivery_day < strtotime('+1 day') && $this->label_path !== '' ){
+                return 'Verzonden';
+            }else if( $this->label_path !== '' ){
+                return 'Staat klaar voor verzending';
+            }else{
+                return 'Bestelling ontvangen';
+            }
+        }
+
+        
+        /**
+         * Return the Discount attribute
+         *
+         * @return Array
+         */
+        public function getDiscountTotalAttribute()
+        {
+            $total = 0;
+            foreach( $this->discounts as $discount ){
+                if( $discount['gift_certificate'] == false ){
+
+                    $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
+                    $total += $discount[ $key ] ?? 0;
+                }
+            }
+            
+            return $total;
+        }
+
+        /**
+         * Return the Gift Certificate total attribute
+         *
+         * @return Array
+         */
+        public function getGiftCertificatesTotalAttribute()
+        {
+            $total = 0;
+            foreach( $this->discounts as $discount ){
+                if( $discount['gift_certificate'] == true ){
+                    
+                    $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
+                    $total += $discount[ $key ] ?? 0;
+                }
+            }
+            
+            return $total;
+        }
+
+        /**
+         * Return the discounts used:
+         *
+         * @return void
+         */
+        public function getDiscountsAttribute()
+        {
+            return json_decode( $this->applied_discount, true ) ?? [];
+        }
+
+        /**
+         * Return the shipping method
+         *
+         * @return string
+         */
+        public function getShippingMethodAttribute()
+        {
+            $method = $this->shipping;
+            return $method['name'] ?? 'Onbekend';
+        }
+
+
+        /**
+         * Return the readable status:
+         *
+         * @return String
+         */
+        public function getReadableStatusAttribute()
+        {
+            $states = [
+                'processing' => "In behandeling",
+                'open'       => "Open",
+                'on-hold'    => "In de wacht",
+                'cancelled'  => "Geannuleerd",
+                'canceled'   => 'Geannuleerd',
+                'failed'     => "Mislukt",
+                'completed'  => "Voltooid",
+            ];
+
+            return $states[ $this->status ];
+        }
+
+        /**
+         * Return the shipping class
+         *
+         * @return string
+         */
+        public function getShippingClassAttribute()
+        {
+            $classes = [
+                'evening-delivery' => 'badge-dark',
+                'day-delivery' => 'badge-secondary',
+                'belgium-delivery' => 'badge-secondary',
+                'free-delivery' => 'badge-success',
+                'local-delivery' => 'badge-success',
+                'pickup-basbq' => 'badge-warning',
+                'pickup-carmedia' => 'badge-danger',
+                'pickup-keischerp' => 'badge-dark',         
+            ];
+
+            if( isset( $classes[ $this->shipping_key ] ) ){
+                return $classes[ $this->shipping_key ];
+            }
+
+            return 'badge-'.str_replace( '_', '-', $this->shipping_key );
+        }
+
+
+        /**
+         * Does this order have a label?
+         *
+         * @return String
+         */
+        public function getHasLabelAttribute()
+        {
+            if( !is_null( $this->label_path ) && $this->label_path != '' ){
+                return true;
+            }
+
+            return false;
+        }
+
+    
+        /**
+         * Return the correct label API
+         *
+         * @return String
+         */
+        public function getLabelApiAttribute()
+        {
+            if( 
+                $this->shipping_key === 'evening-delivery' ||
+                $this->shipping_key === 'day-delivery' ||
+                $this->shipping_key === 'belgium-delivery'
+            ){
+                return 'pakketpartner';
+            }
+
+            return 'bbquality';
+        }
+
+
+        /**
+         * Get the certificates, if there are any:
+         * 
+         * @return bool
+         */
+        public function getHasCertificatesAttribute()
+        {
+            $rows = $this->rows;
+            $ids = Coupon::getCertificateIds();
+            foreach( $rows as $row ){
+                if( in_array( $row->product_id, $ids ) ){
+                    return true;
+                    break;
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * Return the certificate url   
+         *
+         * @return void
+         */
+        public function getCertificatesUrlAttribute()
+        {
+            $token = \md5(\json_encode( $this->coupons()->printable() ) );
+            return '/download-cadeaubonnen?order='.$this->id.'&token='.$token;
+        }
+
+
+        /**
+         * Return wether or not this order is a subscription
+         *
+         * @return void
+         */
+        public function getIsSubscriptionAttribute()
+        {
+            return $this->payment->is_recurring;
+        }
+
+
+        /**
+         * Return the next order number
+         *
+         * @return int
+         */
+        public static function nextOrderNumber()
+        {
+            $q = static::table('orders')->whereNotNull('order_number')->orderBy('order_number', 'DESC');
+            $last_order = $q->first();
+            $current = (int)$last_order->order_number;
+            return ( $current + 1 );
+        }
+
+
+        /**
+         * Custom boot function
+         *
+         * @return void
+         */
+        public static function boot() {
+            
+            parent::boot();
+            //static::addGlobalScope( new NotCartScope() );
+            
+            self::deleting( function( $order ) { 
+
+                $order->rows()->each(function( $row ) {
+                    $row->delete(); // <-- direct deletion
+                });
+
+                $order->payment()->each(function( $payment ) {
+                    $payment->delete(); 
+                });
+
+                $order->customer()->each(function( $customer ) {
+                    $customer->delete(); 
+                });
+            });
+        }
+        
+    }
