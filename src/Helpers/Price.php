@@ -1,6 +1,6 @@
 <?php
 
-    namespace BbqOrders\Helpers;
+    namespace BbqData\Helpers;
 
     class Price{
 
