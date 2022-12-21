@@ -5,8 +5,10 @@
     use Carbon\Carbon;
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
+    use BbqData\Models\Coupon;
     use BbqData\Models\Casts\Json;
     use BbqShipping\Helpers\Shipping;
+    use BbqData\Models\CouponCampaign;
     use BbqData\Models\Scopes\NotCartScope;
 
     class Order extends Model{
@@ -144,24 +146,35 @@
         {
             $subtotal = 0;
             $vat = 0;
+            $vatHigh = 0;
+            $vatLow = 0;
+            $subtotalHigh = 0;
+            $subtotalLow = 0;         
 
             foreach( $this->rows as $row ){
                 if( !isset( $row->price ) || is_null( $row->price ) ){
                     continue;
                 }
-                
+
                 $price = ( $row->price * $row->quantity );
                 $subtotal += $price;
-                $vat += Price::vat( $price, $row->vat );
+                $vat +=  Price::vat( $price, $row->vat );
+                if ($row->vat > 0.1) {
+                    $subtotalHigh += $price;
+                    $vatHigh += Price::vat( $price, $row->vat );
+                } else {
+                    $subtotalLow += $price;
+                    $vatLow += Price::vat( $price, $row->vat );
+                }
             }
 
             //shipping:
             $shipping = $this->shipping['price_raw'] ?? 0;
 
-            //discount & gift certificates
+            //discount & gift certificates APPLIED
             $discount = $this->discount_total * -1;
             $gift_certificates = $this->gift_certificates_total * -1;
-
+            $exact_certificate_rectification = $this->api_certificates * -1;
 
             $total = $subtotal + $shipping + $discount + $gift_certificates;
 
@@ -173,10 +186,15 @@
             if( $raw ){
                 return [
                     'subtotal' => $subtotal,
+                    'subtotal-high' => $subtotalHigh,
+                    'subtotal-low' => $subtotalLow,
                     'shipping' => $shipping,
                     'vat' => $vat,
+                    'vat-high' => $vatHigh,
+                    'vat-low' => $vatLow,
                     'discount' => $discount,
                     'gift-certificates' => $gift_certificates,
+                    'exact-certificate-rectification' => $exact_certificate_rectification,
                     'total' => $total,
                 ];
             }
@@ -202,7 +220,7 @@
         }
 
         /**
-         * Get the subtotal of certificate money
+         * Get the subtotal of certificate money (bought certificates)
          *
          * @return float
          */
@@ -303,11 +321,17 @@
          */
         public function getDeliveryTimeAttribute()
         {
-            $pickup_day = $this->delivery_date->dayOfWeek;
+            $delivery_day = $this->delivery_date->dayOfWeek;
+            $formatted = $this->delivery_date->format('d-m-Y');
+
             $slug = $this->shipping['slug'];
             $methods = Shipping::methods();
-            if( isset( $methods[ $slug ] ) && is_int( $pickup_day ) ){
-                return $methods[ $slug ]['availability'][ $pickup_day ];
+
+            if( array_key_exists( $formatted, $methods[ $slug ]['availability']) ) {
+                return $methods[ $slug ]['availability'][ $formatted ];
+            }  
+            if( isset( $methods[ $slug ] ) && is_int( $delivery_day ) ){
+                return $methods[ $slug ]['availability'][ $delivery_day ];
             }
 
             return null;
@@ -355,7 +379,31 @@
         }
 
         /**
-         * Return the Gift Certificate total attribute
+         * Return the certificates created through the api
+         * 
+         * @return Int
+         */
+        public function getApiCertificatesAttribute()
+        {
+            $total = 0;
+            foreach( $this->discounts as $discount ){
+                if( $discount['gift_certificate'] == true ){
+                    $id = $discount['id'];
+                    $coupon = Coupon::find($id);
+                    if ( !is_null( $coupon ) && !is_null($coupon->coupon_campaign_id)) {
+                        $campaign = CouponCampaign::find( $coupon->coupon_campaign_id );
+                        if ( !is_null( $campaign ) && !is_null($campaign) && $campaign->source == 'api' ) {
+                            $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
+                            $total += $discount[ $key ] ?? 0;
+                        }
+                    }
+                }
+            }
+            return $total;
+        }
+
+        /**
+         * Return the (SPENT) Gift Certificate total attribute
          *
          * @return Array
          */
@@ -364,7 +412,7 @@
             $total = 0;
             foreach( $this->discounts as $discount ){
                 if( $discount['gift_certificate'] == true ){
-                    
+
                     $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
                     $total += $discount[ $key ] ?? 0;
                 }

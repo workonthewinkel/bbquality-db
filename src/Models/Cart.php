@@ -189,7 +189,7 @@
             //check product:
             //$this->setEnv();
             //$product_ids = explode( ',', $this->env['free_shipping_products'] );
-            $product_ids = [126992,134091];
+            $product_ids = [126992,134091,134674,134667,134825,135269];
 
             foreach( $this->rows as $row ){
                 if( in_array( $row->product_id, $product_ids ) ){

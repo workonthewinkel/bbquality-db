@@ -21,6 +21,7 @@
             'price',
             'quantity',
             'vat',
+            'on_sale',
             'product_id',
             'stock_reduced',
             'points_spent',

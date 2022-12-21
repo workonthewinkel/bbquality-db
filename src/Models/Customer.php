@@ -162,7 +162,7 @@
 
                 $key = 'shipping_'.$prop;
                 $value = $this->{$key};
-                if( $this->{$key} == '' || $this->{$key} == ' ' || is_null( $this->{$key} ) ){
+                if( $this->{$key} == '' || is_null( $this->{$key} ) || ctype_space( $this->{$key} ) ){
                     $value = $this->{$prop};
                 }
                 

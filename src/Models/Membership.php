@@ -3,9 +3,9 @@
     namespace BbqData\Models;
 
     use Carbon\Carbon;
-    use BbqOrders\Helpers\Fields;
+    use BbqData\Helpers\Fields;
     use BbqData\Contracts\Model;
-    use BbqOrders\Helpers\Recurring;
+    use BbqData\Helpers\Recurring;
     use Illuminate\Database\Eloquent\SoftDeletes;
 
 

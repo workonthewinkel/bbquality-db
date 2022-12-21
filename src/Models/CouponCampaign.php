@@ -21,7 +21,7 @@
          *
          * @var array
          */
-        protected $fillable = [ 'name' ];
+        protected $fillable = [ 'name','source' ];
 
 
         /**

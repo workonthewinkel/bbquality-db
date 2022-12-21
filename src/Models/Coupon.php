@@ -42,14 +42,16 @@
             'used',
             'is_gift_certificate',
             'free_shipping',
-            'term_id'
+            'term_id',
+            'coupon_campaign_id'
         ];
 
 
         const STATES = [
             'bought' => 1,
             'redeemed' => 2,
-            'remaining' => 3
+            'remaining' => 3,
+            'earned' => 4,
         ];
 
         /**
@@ -208,6 +210,19 @@
             });
         }
 
+
+        /**
+         * Return all earned coupons - coupons earned during campaign 
+         *
+         * @return void
+         */
+        public function scopeEarned( $query )
+        {
+            return $query->whereHas( 'orders', function( $coupon ) {
+                $coupon->where( $this->pivot.'.status', static::STATES['earned'] );
+            });
+        }
+
         /**
          * Return all redeemed coupons
          *
@@ -216,7 +231,7 @@
         public function scopePrintable( $query )
         {
             $coupons = $query->whereHas( 'orders', function( $coupon ) {
-                $states = [ static::STATES['bought'], static::STATES['remaining'] ];
+                $states = [ static::STATES['bought'], static::STATES['remaining'], static::STATES['earned']  ];
                 $coupon->whereIn($this->pivot.'.status', $states );
             });
 

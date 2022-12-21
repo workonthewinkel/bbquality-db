@@ -3,7 +3,7 @@
     namespace BbqData\Models;
 
     use BbqData\Contracts\Model;
-    use BbqOrders\Helpers\Fields;
+    use BbqData\Helpers\Fields;
     use BbqData\Models\Customer;
 
     class User extends Model
@@ -143,7 +143,7 @@
          */
         public function add_points( $add )
         {
-            $loyalty = $this->loyalty;
+            $loyalty = Loyalty::where('user_id', $this->ID )->first();
             if( is_null( $loyalty ) ){
                 $loyalty = $this->loyalty()->create();
             }
