@@ -7,7 +7,7 @@
     use BbqData\Contracts\Model;
     use BbqData\Models\Coupon;
     use BbqData\Models\Casts\Json;
-    use BbqShipping\Helpers\Shipping;
+    use BbqOrders\Helpers\Shipping;
     use BbqData\Models\CouponCampaign;
     use BbqData\Models\Scopes\NotCartScope;
 

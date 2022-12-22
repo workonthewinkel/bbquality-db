@@ -2,7 +2,6 @@
 
     namespace BbqData\Models;
 
-    use ChefPayment\Helpers\Url;
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
     use BbqOrders\Payment\Transaction;
