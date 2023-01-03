@@ -138,7 +138,11 @@
          */
         public function getValidFromAttribute( $value )
         {
-            return Carbon::parse( $value );
+            if( !is_null( $value ) ){
+                return Carbon::parse( $value );
+            }
+
+            return $value;
         }
 
         /**
