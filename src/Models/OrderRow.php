@@ -158,7 +158,7 @@
             $var = $this->variation;
             if( !is_null( $var ) && substr( $value, -3 ) !== 'gr.' ){
                 
-                $value .= ' - '.$var->portion.'gr.';
+                $value .= ' '.$var->portion.'gr.';
             }
 
             return $value;
