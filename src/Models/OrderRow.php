@@ -141,9 +141,27 @@
          */
         public function getProductClassAttribute()
         {
-            if( class_exists( '\ChefCart\Helpers\Product' ) ){
-                return \ChefCart\Helpers\Product::get( $this->product_id, $this->product_variation_id );
+            if( class_exists( '\BbqOrders\Helpers\Product' ) ){
+                return \BbqOrders\Helpers\Product::get( $this->product_id, $this->product_variation_id );
             }
+        }
+
+
+        /**
+         * Filter the description
+         *
+         * @param string $value
+         * @return string
+         */
+        public function getDescriptionAttribute( $value )
+        {
+            $var = $this->variation;
+            if( !is_null( $var ) && substr( $value, -3 ) !== 'gr.' ){
+                
+                $value .= ' - '.$var->portion.'gr.';
+            }
+
+            return $value;
         }
 
 
