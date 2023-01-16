@@ -207,4 +207,41 @@
         {
             return $this->object;
         }
+
+
+        /**
+         * Check 
+         *
+         * @return void
+         */
+        public function check( $row )
+        {
+            $remaining = $this->get();
+
+            //if we're out of stock:            
+            if( $remaining < $row->quantity ){
+
+                $message = 'We hebben helaas %s stuks van %s op voorraad';
+                
+                //if the products are in your cart, add onto that message: 
+                if( $row->quantity == $remaining ){
+                    $message .= ' en deze zitten al in je winkelwagentje.';
+                }
+                
+                //return the message array
+                $msg = [
+                    'error' => 'stock',
+                    'message' => sprintf( 
+                                    $message,
+                                    $remaining,
+                                    $this->object->title
+                    ),
+                    'remaining_stock' => $remaining
+                ];
+
+                return $msg;
+            }
+
+            return true;
+        }
     }

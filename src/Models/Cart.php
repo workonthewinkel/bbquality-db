@@ -198,7 +198,7 @@
             }
 
             //check membership:
-            if( !is_null( User::current()->membership ) ){
+            if( !is_null( User::current() ) && !is_null( User::current()->membership ) ){
                 return true; 
             }
 
