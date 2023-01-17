@@ -73,12 +73,12 @@
             $title = $this->post_title;
 
                         //query subtitle:
-            $result = Capsule::table('bbquality_postmeta')
+/*            $result = Capsule::table('bbquality_postmeta')
                 ->where('meta_key', 'product-subtitle') 
                 ->where('post_id', $this->ID )->first();
 
             dd( $result );
-
+*/
 
             if( function_exists( 'get_post_meta' ) ){
                 $subtitle = \get_post_meta( $this->ID, 'product-subtitle', true );

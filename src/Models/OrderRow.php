@@ -155,11 +155,11 @@
          */
         public function getDescriptionAttribute( $value )
         {
-            $var = $this->variation;
+            /*$var = $this->variation;
             if( !is_null( $var ) && substr( $value, -3 ) !== 'gr.' ){
                 
                 $value .= ' '.$var->portion.'gr.';
-            }
+            }*/
 
             return $value;
         }
