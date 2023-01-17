@@ -72,20 +72,14 @@
         {
             $title = $this->post_title;
 
-                        //query subtitle:
-/*            $result = Capsule::table('bbquality_postmeta')
+            //query subtitle:
+            $result = static::table('postmeta')
                 ->where('meta_key', 'product-subtitle') 
                 ->where('post_id', $this->ID )->first();
 
-            dd( $result );
-*/
-
-            if( function_exists( 'get_post_meta' ) ){
-                $subtitle = \get_post_meta( $this->ID, 'product-subtitle', true );
-                if( $subtitle && $subtitle !== '' ){
-                    $title .= ' '.$subtitle;
-                }
-            }    
+            if( !is_null( $result ) && isset( $result->meta_value ) && $result->meta_value !== '' ){
+                $title .= ' '.$result->meta_value;
+            }
             
             return $title;
         }
