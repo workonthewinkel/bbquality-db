@@ -19,6 +19,7 @@
         protected $fillable = [
             'description',
             'price',
+            'original_price',
             'quantity',
             'vat',
             'on_sale',
@@ -92,6 +93,21 @@
             return Price::format( $this->price );
         }
 
+
+        /**
+         * Return the savings of this order row
+         *
+         * @return float
+         */
+        public function getSavingsAttribute()
+        {
+            if( is_null( $this->original_price ) ){
+                return 0;
+            }
+
+            return ( $this->original_price - $this->price );
+        }
+
         /**
          * Return the formatted Total
          *
@@ -101,6 +117,7 @@
         {
             return Price::format( $this->total );
         }
+
 
         /**
          * Return the products thumbnail
