@@ -91,6 +91,20 @@
 
 
         /**
+         * Return the full name of this user
+         *
+         * @return string
+         */
+        public function getFullNameAttribute()
+        {
+            $meta = $this->meta;
+            $name = $meta['first_name'] ?? '';
+            $name .= ' '. $meta['last_name'] ?? '';
+            return $name;
+        }
+
+
+        /**
          * Return the address fields of a user
          *
          * @return void
