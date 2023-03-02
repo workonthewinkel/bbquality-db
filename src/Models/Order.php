@@ -83,6 +83,18 @@
                         ->withTimestamps();
         }
 
+
+        /**
+         * An order may belong to an affiliate  
+         *
+         * @return Affiliate
+         */
+        public function affiliate()
+        {
+            return $this->belongsTo('BbqData\Models\Affiliate');
+        }
+
+
         /**
          * Set this orders status, by the status of the payment
          *
