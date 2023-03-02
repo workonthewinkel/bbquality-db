@@ -470,6 +470,7 @@
                 'canceled'   => 'Geannuleerd',
                 'failed'     => "Mislukt",
                 'completed'  => "Voltooid",
+                'refunded'   => '(deels) terugbetaald',
             ];
 
             return $states[ $this->status ];
