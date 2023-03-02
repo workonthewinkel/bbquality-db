@@ -202,6 +202,10 @@
                 return true; 
             }
 
+            if( Carbon::now() > '2023-03-03 23:59:59' && Carbon::now() < '2023-03-06 00:00:00') {
+                return true;
+            }
+
             return false;
         }
 
