@@ -4,6 +4,7 @@
 
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
+    use BbqData\Helpers\Discounts;
     use BbqData\Models\Handlers\Stock;
 
     class OrderRow extends Model{
@@ -27,6 +28,7 @@
             'stock_reduced',
             'points_spent',
             'points_earned',
+            'discount_type',
             'product_variation_id'
         ];
 
@@ -73,6 +75,8 @@
             return $product->stock();
         }
 
+
+
         /**
          * Return this row's total
          *
@@ -80,7 +84,9 @@
          */
         public function getTotalAttribute()
         {
-            return $this->price * $this->quantity;
+            $total = $this->price * $this->quantity;
+            $stacked_discount = Discounts::calculate( $this );
+            return $total - $stacked_discount;
         }
 
         /**
