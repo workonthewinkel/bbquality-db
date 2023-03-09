@@ -124,6 +124,31 @@
             return Price::format( $this->total );
         }
 
+        /**
+         * Return wether or not this order row has a stacked discount:
+         *
+         * @return bool
+         */
+        public function getHasStackedDiscountAttribute()
+        {
+            //no variation products (for now:)
+            if( is_null( $this->product_variation_id ) || $this->product_variation_id == 0 ){
+                return false;
+            }
+
+            //if the discount type is sale or empty, it's a no:
+            if( is_null( $this->discount_type ) || $this->discount_type == 'sale' ){
+                return false;
+            }
+            
+            //else, calculate; if it's a zero or lower, it's a no.
+            if( Discount::calculate( $this ) <= 0 ){
+                return false;
+            }
+
+            return true;
+
+        }
 
         /**
          * Return the products thumbnail
