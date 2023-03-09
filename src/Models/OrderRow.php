@@ -4,7 +4,7 @@
 
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
-    use BbqData\Helpers\Discounts;
+    use BbqData\Helpers\Discount;
     use BbqData\Models\Handlers\Stock;
 
     class OrderRow extends Model{
@@ -85,7 +85,7 @@
         public function getTotalAttribute()
         {
             $total = $this->price * $this->quantity;
-            $stacked_discount = Discounts::calculate( $this );
+            $stacked_discount = Discount::calculate( $this );
             return $total - $stacked_discount;
         }
 

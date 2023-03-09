@@ -60,17 +60,17 @@
          */
         public static function calculate( $row ) 
         {
-            if( !is_null( $row->discount_type ) && $row->discount_type !== 'sale' ){
+            if( is_null( $row->discount_type ) || $row->discount_type === 'sale' ){
                 return 0;
             }
 
             $discount = static::find( $row->discount_type );
-            if( is_null( $discount ) || $discount['quantity'] < $row->quantity ){
+            if( is_null( $discount ) || $row->quantity < $discount['quantity'] ){
                 return 0;
             }
 
             $percentage = $discount['percentage'] / 100;
-            $amount = absint( $row->quantity / $discount['quantity'] );
+            $amount = (int)( $row->quantity / $discount['quantity'] );
 
             //calculate the straight price discount 
             return ( $amount * $row->original_price ) * $percentage;

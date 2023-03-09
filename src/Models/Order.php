@@ -6,7 +6,7 @@
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
     use BbqData\Models\Coupon;
-    use BbqData\Helpers\Discounts;
+    use BbqData\Helpers\Discount;
     use BbqData\Models\Casts\Json;
     use BbqOrders\Helpers\Shipping;
     use BbqData\Models\CouponCampaign;
@@ -181,7 +181,7 @@
                 }
 
                 //subtract stacked discounts:
-                $subtotal -= Discounts::calculate( $row );
+                $subtotal -= Discount::calculate( $row );
             }
 
             //shipping:
