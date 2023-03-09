@@ -132,7 +132,7 @@
         public function getHasStackedDiscountAttribute()
         {
             //no variation products (for now:)
-            if( is_null( $this->product_variation_id ) || $this->product_variation_id == 0 ){
+            if( !is_null( $this->product_variation_id ) && $this->product_variation_id !== 0 ){
                 return false;
             }
 
@@ -148,6 +148,23 @@
 
             return true;
 
+        }
+
+
+        /**
+         * Return the name of this order row's discount
+         *
+         * @return string
+         */
+        public function getDiscountNameAttribute()
+        {
+            $discount = Discount::find( $this->discount_type );
+            
+            if( is_null( $this->discount_type ) || is_null( $discount )){
+                return;
+            }
+
+            return $discount['name'];
         }
 
         /**
