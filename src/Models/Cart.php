@@ -4,9 +4,9 @@
 
     use Carbon\Carbon;
     use BbqData\Contracts\Model;
-    use Bbquality\Helpers\CarbonReduction;
     use BbqData\Models\Casts\Json;
     use BbqData\Models\Scopes\CartScope;
+    use Bbquality\Helpers\CarbonReduction;
 
     class Cart extends Model{
 
@@ -145,6 +145,10 @@
         public function only_has_certificates()
         {
             $certificate_ids = Coupon::getCertificateIds();
+
+            //add carbon id, 
+            $certificate_ids[] = CarbonReduction::getProduct();
+
             
             foreach( $this->rows as $row ){
                 if( !in_array( $row->product_id, $certificate_ids ) ){
