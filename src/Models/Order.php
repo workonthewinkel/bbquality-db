@@ -588,7 +588,14 @@
             $q = static::table('orders')->whereNotNull('order_number')->orderBy('order_number', 'DESC');
             $last_order = $q->first();
             $current = (int)$last_order->order_number;
-            return ( $current + 1 );
+            $new = ( $current + 1 );
+
+            //always check if this order number already exists:
+            if( static::table('orders')->where('order_number', $new )->first() !== null ){
+                return static::nextOrderNumber();
+            }
+
+            return $new;
         }
 
 
