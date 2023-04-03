@@ -4,6 +4,7 @@
 
     use Carbon\Carbon;
     use BbqData\Contracts\Model;
+    use BbqData\Helpers\Discount;
     use BbqData\Models\Casts\Json;
     use BbqData\Models\Scopes\CartScope;
     use Bbquality\Helpers\CarbonReduction;
@@ -180,11 +181,19 @@
          */
         public function has_free_shipping()
         {
+            //get total discount (e.g. second-half-price)
+            $discount = 0;
+            foreach( $this->rows as $row ){
+                $discount += Discount::calculate( $row );
+            }
+
             //check subtotal:
             //@todo put 75 in a Shipping helper
-            if( $this->subtotal_without_giftcertificates >= 75 ){
+            if( $this->subtotal_without_giftcertificates - $discount >= 75 ){
                 return true;
             }
+
+            
          
 
             //check coupons:
