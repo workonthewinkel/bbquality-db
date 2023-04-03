@@ -6,6 +6,7 @@
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
     use BbqData\Models\Coupon;
+    use BbqData\Helpers\Discount;
     use BbqData\Models\Casts\Json;
     use BbqOrders\Helpers\Shipping;
     use BbqData\Models\CouponCampaign;
@@ -178,6 +179,9 @@
                     $subtotalLow += $price;
                     $vatLow += Price::vat( $price, $row->vat );
                 }
+
+                //subtract stacked discounts:
+                $subtotal -= Discount::calculate( $row );
             }
 
             //shipping:

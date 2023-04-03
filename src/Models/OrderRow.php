@@ -4,6 +4,7 @@
 
     use BbqData\Helpers\Price;
     use BbqData\Contracts\Model;
+    use BbqData\Helpers\Discount;
     use BbqData\Models\Handlers\Stock;
 
     class OrderRow extends Model{
@@ -27,6 +28,7 @@
             'stock_reduced',
             'points_spent',
             'points_earned',
+            'discount_type',
             'product_variation_id'
         ];
 
@@ -73,6 +75,8 @@
             return $product->stock();
         }
 
+
+
         /**
          * Return this row's total
          *
@@ -80,7 +84,9 @@
          */
         public function getTotalAttribute()
         {
-            return $this->price * $this->quantity;
+            $total = $this->price * $this->quantity;
+            $stacked_discount = Discount::calculate( $this );
+            return $total - $stacked_discount;
         }
 
         /**
@@ -118,6 +124,48 @@
             return Price::format( $this->total );
         }
 
+        /**
+         * Return wether or not this order row has a stacked discount:
+         *
+         * @return bool
+         */
+        public function getHasStackedDiscountAttribute()
+        {
+            //no variation products (for now:)
+            if( !is_null( $this->product_variation_id ) && $this->product_variation_id !== 0 ){
+                return false;
+            }
+
+            //if the discount type is sale or empty, it's a no:
+            if( is_null( $this->discount_type ) || $this->discount_type == 'sale' ){
+                return false;
+            }
+            
+            //else, calculate; if it's a zero or lower, it's a no.
+            if( Discount::calculate( $this ) <= 0 ){
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        /**
+         * Return the name of this order row's discount
+         *
+         * @return string
+         */
+        public function getDiscountNameAttribute()
+        {
+            $discount = Discount::find( $this->discount_type );
+            
+            if( is_null( $this->discount_type ) || is_null( $discount )){
+                return;
+            }
+
+            return $discount['name'];
+        }
 
         /**
          * Return the products thumbnail

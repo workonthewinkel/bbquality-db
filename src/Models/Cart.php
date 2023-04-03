@@ -90,12 +90,17 @@
         {
             $subtotal = $this->subtotal_without_gift_certificates;
 
+            //loop through rows:
             foreach( $this->rows as $row ){
-                //if it's in sale
-                $sale_price = get_post_meta( $row->product_id, '_sale_price', true );
-                if( (float)$sale_price > 0 ){
-                    $subtotal -= ( $row->price * $row->quantity );
+
+                //check if the row has a discount_type:
+                if( is_null( $row->discount_type ) ){
+                    continue;   
                 }
+                
+                //if it's in sale
+                $subtotal -= ( $row->price * $row->quantity );
+
             }
                 
             return $subtotal;
@@ -146,9 +151,8 @@
         {
             $certificate_ids = Coupon::getCertificateIds();
 
-            //add carbon id, 
+            //add the carbon product, because it doesn't count as a cart item:
             $certificate_ids[] = CarbonReduction::getProduct();
-
             
             foreach( $this->rows as $row ){
                 if( !in_array( $row->product_id, $certificate_ids ) ){
