@@ -100,7 +100,7 @@
                 }
                 
                 //if it's in sale
-                $subtotal -= ( $row->price * $row->quantity );
+                $subtotal -= $row->total;
 
             }
                 
@@ -135,8 +135,7 @@
                 }
                 
                 //else, add it to the subtotal
-                $price = ( $row->price * $row->quantity );
-                $subtotal += $price;
+                $subtotal += $row->total;
             }
 
             return $subtotal;
@@ -181,20 +180,11 @@
          */
         public function has_free_shipping()
         {
-            //get total discount (e.g. second-half-price)
-            $discount = 0;
-            foreach( $this->rows as $row ){
-                $discount += Discount::calculate( $row );
-            }
-
             //check subtotal:
             //@todo put 75 in a Shipping helper
-            if( $this->subtotal_without_giftcertificates - $discount >= 75 ){
+            if( $this->subtotal_without_giftcertificates >= 75 ){
                 return true;
             }
-
-            
-         
 
             //check coupons:
             foreach( $this->discounts as $discount ){
