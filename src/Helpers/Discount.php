@@ -40,12 +40,6 @@
                     'slug'          => 'second-half-price',
                     'quantity'      => 2,
                     'percentage'    => 50
-                ],
-                'buy-six-get-one-free' => [
-                    'name'          => '6 halen, 5 betalen',
-                    'slug'          => 'buy-six-get-one-free',
-                    'quantity'      => 6,
-                    'percentage'    => 100
                 ]
             ];
         }
