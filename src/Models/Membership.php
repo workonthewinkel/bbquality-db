@@ -41,7 +41,7 @@
          */
         public function product()
         {
-            return $this->hasOne( 'BbqData\Models\Product', 'ID', 'product_id' );   
+            return $this->belongsTo( 'BbqData\Models\Product', 'product_id', 'ID' );   
         }
 
         /**
