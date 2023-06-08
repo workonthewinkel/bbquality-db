@@ -244,4 +244,25 @@
 
             return true;
         }
+
+
+        /**
+         * Returns the total stock for a product
+         *
+         * @return void
+         */
+        public function total()
+        {
+            $variations = $this->object->variations;
+            if( is_null( $variations ) || $variations->isEmpty() ){
+                return $this->get();
+            
+            }else{
+                $total = 0;
+                foreach( $variations as $variation ){
+                    $total += $variation->stock()->get();
+                }
+                return $total;
+            } 
+        }
     }

@@ -3,12 +3,10 @@
     namespace BbqData\Models;
 
     use BbqData\Contracts\Model;
-    use Illuminate\Database\Eloquent\SoftDeletes;
 
     class StockNotification extends Model
     {
 
-        use SoftDeletes;
 
         /**
          * Customers table
@@ -16,13 +14,6 @@
          * @var string
          */
         protected $table = 'stock_notifications';
-
-        protected $fillable = [
-            'product_id',
-            'user_id',
-            'email',
-            'notified_at'
-        ];
 
         /**
          * Only the id is guarded
