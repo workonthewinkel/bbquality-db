@@ -193,6 +193,40 @@
         }
 
 
+        /**
+         * Get the international prefixed phone number
+         *
+         * @return void
+         */
+        public function getInternationalPhoneAttribute()
+        {
+            if( !is_null( $this->phone ) ){
+
+                $country = static::get_country_code( $this->country );
+                $codes = [ 'NL' => '+31', 'BE' => '+32' ];
+                $alts = ['NL' => '0031', 'BE' => '0032' ]; 
+
+                if( 
+                    substr( $this->phone, 0, 3 ) !== $codes[ $country ] && 
+                    substr( $this->phone, 0, 4 ) !== $alts[ $country ]
+                ){
+                    $phone = $this->phone;
+                    
+                    if( substr( $this->phone, 0, 1 ) == 0 ){
+                        $phone = substr( $this->phone, 1 );
+                    }
+
+                    return $codes[ $country ] . str_replace(' ', '', $phone );
+                
+                }
+
+                return str_replace( $alts[ $country], $codes[ $country], $this->phone );
+            }
+
+            return null;
+        }
+
+
 
         /**
 		 * Returns the country code

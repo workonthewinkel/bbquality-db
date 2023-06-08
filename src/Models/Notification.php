@@ -3,6 +3,7 @@
     namespace BbqData\Models;
 
     use BbqData\Contracts\Model;
+    use BbqData\Models\Casts\Json;
 
     class Notification extends Model{
 

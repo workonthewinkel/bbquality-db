@@ -111,15 +111,15 @@
         public static function getCertificateIds()
         {
             //get the gift certificate ids:
-            $ids = static::table('postmeta')->select('post_id')
-                    ->where([
-                        'meta_key'      => '_is_gift_certificate',
-                        'meta_value'    => 'true'
-                    ])->get()->pluck('post_id')->all();
-        
+            if(function_exists('env')){
+                $ids = array_map('intval', explode(',',env('coupon_ids')));
+
+            }else {
+                $ids = [];
+            }
+
             return $ids;
         }
-
 
         /**
          * Render the amount this coupon is worth
