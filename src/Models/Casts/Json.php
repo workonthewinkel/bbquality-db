@@ -17,7 +17,11 @@
          */
         public function get( $model, $key, $value, $attributes )
         {
-            return json_decode($value, true);
+            if( !is_null( $value ) ){
+                return json_decode($value, true);
+            }
+
+            return $value;
         }
 
         /**
@@ -31,6 +35,10 @@
          */
         public function set( $model, $key, $value, $attributes )
         {
-            return json_encode($value);
+            if( !is_null( $value ) ){
+                return json_encode($value);
+            }
+
+            return null;
         }
     }
