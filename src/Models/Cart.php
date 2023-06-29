@@ -83,6 +83,20 @@
         }
 
         /**
+         * Return the discounts
+         *
+         * @return string
+         */
+        public function getAppliedDiscountAttribute( $value )
+        {
+            if ( $value == null ) {
+                return '{}';
+            }
+
+            return $value;
+        }
+
+        /**
          * Return the subtotal that is applicable to discounts
          *
          * @return float
