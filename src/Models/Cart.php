@@ -249,6 +249,7 @@
                 'type' => $coupon->type,
                 'free_shipping' => $coupon->free_shipping,
                 'gift_certificate' => $coupon->is_gift_certificate,
+                'coupon_campaign_id' => $coupon->coupon_campaign_id
             ];
 
             //add it as a json to the order:
