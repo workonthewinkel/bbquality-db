@@ -79,7 +79,8 @@
          */
         public function getDiscountsAttribute()
         {
-            return json_decode( $this->applied_discount, true ) ?? [];
+            $discount = $this->applied_discount ?? '';
+            return json_decode( $discount, true ) ?? [];
         }
 
         /**
