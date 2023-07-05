@@ -134,7 +134,7 @@
          */
         public static function get_collection( $name = null ) 
         {
-            $db = env( 'mongo_db_name' );
+            $db = env( 'mongo_db' );
             $client = new Client( env('mongo_url' ) );
 
             if( is_null( $name ) ){
