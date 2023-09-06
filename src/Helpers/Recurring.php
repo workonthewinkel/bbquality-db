@@ -17,7 +17,7 @@
             $thursday = Carbon::now()->firstOfMonth( Carbon::THURSDAY );
 
             if( Carbon::now()->timestamp > $thursday->timestamp ){
-                $thursday = Carbon::now()->addMonth()->firstOfMonth( Carbon::THURSDAY );
+                $thursday = $thursday->addMonth()->firstOfMonth( Carbon::THURSDAY );
             }
 
             return $thursday;
@@ -33,7 +33,7 @@
             $thursday = Carbon::now()->firstOfMonth( Carbon::THURSDAY );
 
             if( Carbon::now()->timestamp < $thursday->timestamp ){
-                $thursday = Carbon::now()->subMonth()->firstOfMonth( Carbon::THURSDAY );
+                $thursday = $thursday->subMonth()->firstOfMonth( Carbon::THURSDAY );
             }
 
             return $thursday;
@@ -46,8 +46,8 @@
          */
         public static function nextMonthsDeliveryDay()
         {
-            $thurs = static::nextDeliveryDay();
-            return $thurs->addMonth()->firstOfMonth( Carbon::THURSDAY );
+            $thursday = static::nextDeliveryDay();
+            return $thursday->addMonth()->firstOfMonth( Carbon::THURSDAY );
         }
 
     }
