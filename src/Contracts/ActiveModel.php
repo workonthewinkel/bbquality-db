@@ -135,7 +135,10 @@
         public static function get_collection( $name = null ) 
         {
             $db = env( 'mongo_db' );
-            $client = new Client( env('mongo_url' ) );
+            $client = new Client( env('mongo_url' ), [
+                'username' => env( 'mongo_user' ),
+                'password' => env( 'mongo_pass' )
+            ]);
 
             if( is_null( $name ) ){
                 $name =  static::get_collection_name();
