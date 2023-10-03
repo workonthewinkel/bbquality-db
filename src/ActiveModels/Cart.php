@@ -30,6 +30,7 @@
             $this->cart_id = $cart_id;
             if( $this->valid_id( $cart_id ) ){
                 $this->data = $this->fetch_data( $cart_id );
+            }else{
             }
         }     
         
@@ -74,7 +75,7 @@
             foreach( $this->get('rows',[]) as $row ){
 
                 //if this row has no price:
-                if( !isset( $row['price'] ) || is_null( $row['price'] ) ){
+                if( !isset( $row['price'] ) || is_null( $row['price'] ) || $row['price'] == 0 ){
                     continue;
                 }
 
@@ -109,7 +110,7 @@
             foreach( $this->get('rows', []) as $row ){
 
                 //check if the row has a discount_type:
-                if( is_null( $row['discount_type'] ) ){
+                if( is_null( $row['discount_type'] ) || $row['discount_type'] == '' ){
                     continue;   
                 }
                 
@@ -133,8 +134,13 @@
 
             //add the carbon product, because it doesn't count as a cart item:
             $certificate_ids[] = CarbonReduction::getProduct();
-            
-            foreach( $this->get('rows', []) as $row ){
+
+            $rows = $this->get('rows', []);
+            if( empty( $rows ) ){
+                return false;
+            }
+
+            foreach( $rows as $row ){
                 if( !in_array( $row['id'], $certificate_ids ) ){
                     return false;
                 }
@@ -168,6 +174,10 @@
 
             foreach( $this->get('rows',[]) as $row ){
                 if( in_array( $row['id'], $product_ids ) ){
+                    return true;
+                }
+
+                if( $row['points_spent'] > 0 ){
                     return true;
                 }
             }
@@ -290,6 +300,27 @@
 
             return (string) $result->getInsertedId();
         }   
+
+
+        /**
+         * Find a cart based on order ID
+         *
+         * @param int $order_id
+         * @return Cart
+         */
+        public static function find( $order_id ) 
+        {
+            $result = static::get_collection()->findOne([
+                'order_id' => $order_id
+            ]);
+
+            if( !is_null( $result ) ){
+                $cart_id = $result->_id->__toString();
+                return new self( $cart_id );
+            }
+
+            return null;
+        }
 
         /**
          * Get the delete after date
