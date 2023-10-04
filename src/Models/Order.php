@@ -11,6 +11,7 @@
     use BbqOrders\Helpers\Shipping;
     use BbqData\Models\CouponCampaign;
     use BbqData\Models\Scopes\NotCartScope;
+    use Bbquality\Helpers\CarbonReduction;
 
     class Order extends Model{
         
@@ -263,6 +264,37 @@
 
             return $certificateTotal;
         }
+
+        /**
+         * Return the subtotal that is applicable to discounts
+         *
+         * @return float
+         */
+        public function getPromotionalSubtotalAttribute()
+        {
+            $totals = $this->getTotals( true );
+            $subtotal = $totals['subtotal'] - $totals['gift-certificates'];
+
+            //loop through rows:
+            foreach( $this->rows as $row ){
+
+                //if it's charity:
+                if( $row->product_id == CarbonReduction::getProduct() ){
+                    $subtotal -= $row->total;
+                    continue;
+                
+                //check if the row has a discount_type:
+                }else if ( is_null( $row->discount_type ) || $row->discount_type == '' ){
+                    continue;
+                }
+
+                //if it's in sale
+                $subtotal -= $row->total;
+            }
+                
+            return $subtotal;
+        }
+        
 
         /**
          * Reduce stocks:
