@@ -71,6 +71,11 @@
             if( $stock <= 5 ){
                 global $wp_object_cache;
                 $wp_object_cache->flush();
+
+                //purge page cache as well:
+                if( function_exists( 'spinupwp_purge_site' ) ){
+                    spinupwp_purge_site();
+                }
                 //Logger::error( "Object Cache flushed after stock reduction." );
             }
             
