@@ -277,19 +277,11 @@
 
             //loop through rows:
             foreach( $this->rows as $row ){
-
                 //if it's charity:
                 if( $row->product_id == CarbonReduction::getProduct() ){
                     $subtotal -= $row->total;
-                    continue;
-                
-                //check if the row has a discount_type:
-                }else if ( is_null( $row->discount_type ) || $row->discount_type == '' ){
-                    continue;
+                    continue;                
                 }
-
-                //if it's in sale
-                $subtotal -= $row->total;
             }
                 
             return $subtotal;
