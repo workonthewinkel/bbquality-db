@@ -265,19 +265,28 @@
             return $certificateTotal;
         }
 
+
         /**
-         * Return the subtotal that is applicable to discounts
+         * Return the subtotal that is applicable for promotions:
          *
          * @return float
          */
         public function getPromotionalSubtotalAttribute()
         {
             $totals = $this->getTotals( true );
-            $subtotal = $totals['subtotal'] - $totals['gift-certificates'];
+
+            //only subtract gift certificates if we're not redeeming them:
+            $gift_certificates = 0;
+            if( $totals['gift-certificates'] > 0 ){
+                $gift_certificates = $totals['gift-certificates'];
+            }
+
+            //remove gift certificates, they don't count:
+            $subtotal = $totals['subtotal'] - $gift_certificates;
 
             //loop through rows:
             foreach( $this->rows as $row ){
-                //if it's charity:
+                //if it's charity, subtract the total:
                 if( $row->product_id == CarbonReduction::getProduct() ){
                     $subtotal -= $row->total;
                     continue;                

@@ -85,4 +85,33 @@
         }
 
 
+        /**
+         * Return a product thumbnail
+         *
+         * @return void
+         */
+        public function getThumbnailAttribute()
+        {
+            $result = '';
+            //query subtitle:
+            $result = static::table('postmeta')
+                ->where('meta_key', '_thumbnail_id') 
+                ->where('post_id', $this->ID )->first();
+
+
+            if( !is_null( $result ) && isset( $result->meta_value ) && $result->meta_value !== '' ){
+                $thumb_id = $result->meta_value;
+                $result = static::table('postmeta')
+                                ->where('meta_key', '_wp_attachment_metadata')
+                                ->where('post_id', $thumb_id )
+                                ->first();
+
+                if( !is_null( $result ) && isset( $result->meta_value ) && $result->meta_value !== '' ){
+                    $value = unserialize( $result->meta_value );
+                    return env('WP_URL') . '/wp-content/uploads/' . $value['file'];
+                }
+            }
+            
+            return $result;
+        }
     }
