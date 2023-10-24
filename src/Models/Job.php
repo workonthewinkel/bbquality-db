@@ -23,6 +23,7 @@
             'object',
             'object_id',
             'status',
+            'replies',
             'action',
             'run_after'
         ];
@@ -45,7 +46,8 @@
         const STATES = [
             'open' => 0,
             'completed' => 1,
-            'error' => 2
+            'error' => 2,
+            'retry' => 3,
         ];
 
 
