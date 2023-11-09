@@ -619,7 +619,11 @@
          */
         public function getIsSubscriptionAttribute()
         {
-            return $this->payment->is_recurring;
+            if( !is_null( $this->payment ) ){
+                return $this->payment->is_recurring;
+            }
+
+            return false;
         }
 
 
