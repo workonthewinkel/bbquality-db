@@ -274,13 +274,9 @@
         public function getPromotionalSubtotalAttribute()
         {
             $totals = $this->getTotals( true );
+            $gift_certificates = $this->getCertificateTotal();
 
             //only subtract gift certificates if we're not redeeming them:
-            $gift_certificates = 0;
-            if( $totals['gift-certificates'] > 0 ){
-                $gift_certificates = $totals['gift-certificates'];
-            }
-
             //remove gift certificates, they don't count:
             $subtotal = $totals['subtotal'] - $gift_certificates;
 
