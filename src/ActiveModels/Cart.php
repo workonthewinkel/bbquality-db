@@ -51,7 +51,7 @@
         /**
          * Return any data in the data-array
          *
-         * @return void
+         * @return mixed
          */
         public function get( $key, $default = null )
         {
@@ -61,6 +61,7 @@
 
             return $default;
         }
+
 
         /**
          * Return the subtotal without gift certificates
@@ -250,10 +251,40 @@
         }
 
 
+        /**
+         * Returns wether or not a cart is new or old:
+         *
+         * @return boolean
+         */
+        public function is_old()
+        {
+            $updated_at = $this->get( 'updated_at', null );
+            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInHours( Carbon::now() ) > 2 ){
+                return true;
+            }
+            return false;
+        }
+
+
 
         /*====================================*/
         /*          Helper functions          */
         /*====================================*/
+
+
+        /**
+         * Save a single field
+         *
+         * @param string $key
+         * @param mixed $value
+         * @return mixed
+         */
+        public function save_field( $key, $value )
+        {
+            $data = $this->data;
+            $data[ $key ] = $value;
+            return $this->save( $data );
+        }
 
 
         /**
@@ -264,8 +295,9 @@
          */
         public function save( $data )
         {
-            //always check for free shipping:
+            //set the delete_after and updated_at properties:
             $data['delete_after'] = static::delete_after();
+            $data['updated_at'] = Carbon::now()->timestamp;
 
             //set the data, so we can use it later.
             $this->data = $data;
