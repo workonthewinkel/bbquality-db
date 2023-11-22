@@ -375,7 +375,7 @@
         public function getDeliveryTimeAttribute()
         {
             $delivery_day = $this->delivery_date->dayOfWeek;
-            $formatted = $this->delivery_date->format('d-m-Y');
+            $formatted = $this->delivery_date->format('Y-m-d');
 
             $slug = $this->shipping['slug'];
             $methods = Shipping::methods();
