@@ -266,6 +266,24 @@
         }
 
 
+        /**
+         * Check if this cart contains products with points
+         *
+         * @return void
+         */
+        public function contains_points()
+        {
+            $rows = $this->get('rows', []);
+            foreach( $rows as $row ){
+                if( \absint( $row['points_spent'] ) > 0 ){
+                    return true;
+                }
+            }   
+
+            return false;
+        }
+
+
 
         /*====================================*/
         /*          Helper functions          */
