@@ -114,6 +114,11 @@
                 if( is_null( $row['discount_type'] ) || $row['discount_type'] == '' ){
                     continue;   
                 }
+
+                //if it's charity:
+                if( $row['id'] == CarbonReduction::getProduct() ){
+                    continue;
+                }
                 
                 //if it's in sale
                 $subtotal -= ( $row['price'] * $row['quantity'] );
@@ -275,7 +280,7 @@
         {
             $rows = $this->get('rows', []);
             foreach( $rows as $row ){
-                if( \absint( $row['points_spent'] ) > 0 ){
+                if( !is_null( $row ) && \absint( $row['points_spent'] ) > 0 ){
                     return true;
                 }
             }   
