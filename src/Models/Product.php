@@ -3,11 +3,10 @@
     namespace BbqData\Models;
 
 
-    use BbqData\Contracts\Model;
     use BbqData\Models\Handlers\Stock;
     use BbqData\Models\Scopes\ProductScope;
 
-    class Product extends Model
+    class Product extends Post
     {
         
         /**

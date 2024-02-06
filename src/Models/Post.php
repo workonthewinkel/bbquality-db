@@ -30,4 +30,21 @@
         protected $guarded = ['id'];
 
 
+        public function relations()
+        {
+            return $this->hasMany( Relation::class, 'post_id', 'ID' );
+        }
+
+
+        /**
+         * Return the related posts as related 
+         *
+         * @return void
+         */
+        public function get_related_posts()
+        {
+            $relation_ids = $this->relations->pluck('related_post_id')->toArray();
+            return $this->whereIn('ID', $relation_ids )->get();
+        }
+
     }
