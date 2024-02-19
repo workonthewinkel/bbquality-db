@@ -54,7 +54,7 @@
          *
          * @return Post
          */
-        public function posts()
+        public function post()
         {
             return $this->hasOne( Post::class, 'ID', 'related_post_id' );
         }
@@ -129,13 +129,25 @@
 
 
         /**
-         * Return all related upsells
+         * Return all related bundled products
          * 
          * @return QueryBuilder
          */
         public function scopeBundled( $query )
         {
             return $query->where( 'context', static::context( 'bundled') );
+        }
+
+
+        /**
+         * Return all related bought together products
+         *
+         * @param QueryBuilder $query
+         * @return QueryBuilder
+         */
+        public function scopeBoughtTogether( $query )
+        {
+            return $query->where( 'context', static::context( 'bought_together' ) );
         }
 
 
@@ -158,6 +170,19 @@
         public function scopeRecipes( $query )
         {
             return $query->where( 'post_type', static::post_type( 'recipes' ) );
+        }
+
+
+        /**
+         * Returns the related ids in an array
+         *
+         * @param QueryBuilder $query
+         * @return Array
+         */
+        public function scopeIds( $query )
+        {
+            $results = $query->get();
+            return $results->pluck('related_post_id')->toArray();
         }
 
 

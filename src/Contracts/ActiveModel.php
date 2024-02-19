@@ -82,6 +82,23 @@
 
 
         /**
+         * Return mongo rows based on a query with options 
+         *
+         * @param array $query
+         * @return void
+         */
+        public static function where( $query, $options = [] ) 
+        {
+            $result = static::get_collection()->find( $query, $options );
+            if( !is_null( $result ) ){
+                return iterator_to_array( $result );
+            }
+
+            return [];
+        }
+
+
+        /**
          * Delete the cart
          *
          * @param int $order_id
