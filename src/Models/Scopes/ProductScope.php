@@ -19,8 +19,8 @@ namespace BbqData\Models\Scopes;
         public function apply(Builder $builder, Model $model)
         {
             $builder->where([
-                'post_type' => 'product',
-                'post_status' => 'publish'
+                'post_type' => 'product'
+                //'post_status' => 'publish'
             ]);
         }
 
