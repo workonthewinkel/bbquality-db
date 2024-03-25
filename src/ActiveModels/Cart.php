@@ -18,6 +18,12 @@
          */
         protected $data;
 
+        /**
+         * Local cart_id
+         *
+         * @var uuid 
+         */
+        protected $cart_id;
 
         /**
          * Constructor
