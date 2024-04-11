@@ -270,5 +270,30 @@
                     break;
             }   
         }
+
+        /**
+         * Return a readable status:
+         *
+         * @return void
+         */
+        public function getReadableStatusAttribute()
+        {
+            switch( $this->status ){
+                case 'open':
+                    return 'Onbekend';
+                    break;
+                case 'on-hold':
+                    return 'In de wacht';
+                    break;
+                case 'paid':
+                    return 'Betaald';
+                    break;
+                case 'cancelled':
+                    return 'Geannuleerd';
+                    break;
+                case 'refund':
+                    return 'Teruggestort';
+            }   
+        }
         
     }

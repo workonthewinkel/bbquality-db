@@ -379,6 +379,9 @@
 
             $slug = $this->shipping['slug'];
             $methods = Shipping::methods();
+            if( !isset( $methods[ $slug ] ) ){
+                return null;
+            }
 
             if( array_key_exists( $formatted, $methods[ $slug ]['availability']) ) {
                 return $methods[ $slug ]['availability'][ $formatted ];
@@ -401,9 +404,9 @@
             if( $this->delivery_day == strtotime( date( 'Y-m-d 00:00:00' ) ) && $this->label_path !== '' ){
                 return 'Onderweg';
             }else if( $this->status == 'open' ){
-                return 'Onbekend';
+                return '';
             }else if( $this->delivery_day < strtotime('+1 day') && $this->label_path !== '' ){
-                return 'Verzonden';
+                return 'Geleverd';
             }else if( $this->label_path !== '' ){
                 return 'Staat klaar voor verzending';
             }else{
@@ -622,6 +625,20 @@
             return false;
         }
 
+        /**
+         * Return the total points given in this order
+         *
+         * @return int
+         */
+        public function getTotalPointsAttribute()
+        {
+            $totals = $this->getTotals( true );
+            $points = floor( $totals['subtotal'] / 25 ); //base points
+            foreach( $this->rows as $row ){
+                $points += $row->points_earned;
+            }
+            return $points;
+        }
 
         /**
          * Return the next order number

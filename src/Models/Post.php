@@ -30,9 +30,24 @@
         protected $guarded = ['id'];
 
 
+        /**
+         * A Post has many relations
+         *
+         * @return void
+         */
         public function relations()
         {
             return $this->hasMany( Relation::class, 'post_id', 'ID' );
+        }
+
+        /**
+         * A Post has many images
+         *
+         * @return void
+         */
+        public function images()
+        {
+            return $this->hasMany( Image::class, 'post_id', 'ID' );
         }
 
 
@@ -41,11 +56,11 @@
          *
          * @return void
          */
-        public function get_upsells()
+        public function get_upsells( $amount = 10 )
         {
-            $upsells = $this->relations()->upsells()->get();
+            $upsells = $this->relations()->upsells()->limit( $amount )->get();
             if( $upsells->isEmpty() ){
-                $upsells = $this->relations()->boughtTogether()->get();
+                $upsells = $this->relations()->boughtTogether()->limit(3)->get();
             }
 
             return $upsells;

@@ -48,6 +48,7 @@
             'completed' => 1,
             'error' => 2,
             'retry' => 3,
+            'in_progress' => 4,
         ];
 
 
