@@ -60,7 +60,7 @@
         {
             $upsells = $this->relations()->upsells()->limit( $amount )->get();
             if( $upsells->isEmpty() ){
-                $upsells = $this->relations()->boughtTogether()->limit(3)->get();
+                $upsells = $this->relations()->boughtTogether()->limit( $amount )->get();
             }
 
             return $upsells;
