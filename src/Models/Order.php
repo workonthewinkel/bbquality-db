@@ -484,6 +484,10 @@
          */
         public function getDiscountsAttribute()
         {
+			if( is_null( $this->applied_discount ) ){
+				return [];
+			}
+			
             return json_decode( $this->applied_discount, true ) ?? [];
         }
 
