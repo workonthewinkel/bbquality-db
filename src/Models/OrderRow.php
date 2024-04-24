@@ -176,7 +176,9 @@
         {
             if( function_exists( 'get_the_post_thumbnail_url' ) ){
                 $thumb = \get_the_post_thumbnail_url( $this->product_id, 'thumbnail' );
-                //$thumb = \get_site_url() . $thumb;
+				if( substr( $thumb, 0, 5 ) !== 'https' ){ 
+                	$thumb = \get_site_url() . $thumb;
+				}
                 //for localhost
                 $thumb = str_replace( 'bbquality/bbquality/', 'bbquality/', $thumb ); 
                 return $thumb;
