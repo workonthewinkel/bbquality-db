@@ -18,10 +18,15 @@ namespace BbqData\Models\Scopes;
          */
         public function apply(Builder $builder, Model $model)
         {
-            $builder->where([
+			$scopes = [
                 'post_type' => 'product',
-                'post_status' => 'publish'
-            ]);
+            ];
+
+			if( !isset( $_GET['preview'] ) ){
+				$scopes['post_status'] = 'publish';
+			}
+
+            $builder->where( $scopes );
         }
 
     }
