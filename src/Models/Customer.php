@@ -62,6 +62,7 @@
             $orders = Order::where('status', '!=', 'canceled')
                         ->where('status', '!=', 'cancelled' )
                         ->where('status', '!=', 'cart' )
+                        ->where('status', '!=', 'open' )
                         ->where('status', '!=', 'new' )
                         ->whereIn( 'customer_id', $customers )
                         ->with('rows','payment')    
