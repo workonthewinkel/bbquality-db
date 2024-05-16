@@ -270,7 +270,8 @@
         public function is_old()
         {
             $updated_at = $this->get( 'updated_at', null );
-            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInHours( Carbon::now() ) > 2 ){
+			//a cart is considered old if it's been over 30 minutes:
+            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInMinutes( Carbon::now() ) > 30 ){
                 return true;
             }
             return false;
