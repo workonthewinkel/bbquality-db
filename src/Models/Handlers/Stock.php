@@ -2,7 +2,7 @@
 
     namespace BbqData\Models\Handlers;
 
-    use Cuisine\Utilities\Logger;
+    use BbqOrders\Loggers\StockEvents;
     use BbqData\Models\Notification;
     use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -71,12 +71,16 @@
             if( $stock <= 5 ){
                 global $wp_object_cache;
                 $wp_object_cache->flush();
+                $flushed = 'Flushed: Object Cache';
 
                 //purge page cache as well:
                 if( function_exists( 'spinupwp_purge_site' ) ){
                     spinupwp_purge_site();
+                    $flushed .= ' & Page Cache';
                 }
-                //Logger::error( "Object Cache flushed after stock reduction." );
+
+                $product = $this->object->title ?? $this->object->description;
+                StockEvents::event( $flushed .  ' for ' . $product . ' stock is now: ' . $stock );
             }
             
             $this->createWarning( $stock );
