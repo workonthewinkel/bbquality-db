@@ -269,11 +269,19 @@
          */
         public function is_old()
         {
+			$created_at = $this->get( 'created_at', null );
             $updated_at = $this->get( 'updated_at', null );
-			//a cart is considered old if it's been over 30 minutes:
+
+			//always check the created_at first. A cart is old if it's been over 30 minutes:
+			if( !is_null( $created_at ) && Carbon::createFromTimestamp( $created_at )->diffInMinutes( Carbon::now() ) > 30 ){
+				return true;
+			}
+
+			//fallback to the updated_at:
             if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInMinutes( Carbon::now() ) > 30 ){
                 return true;
             }
+
             return false;
         }
 
@@ -357,7 +365,9 @@
                 'rows' => [],
                 'analytics' => [],
                 'discounts' => [],
-                'delete_after' => static::delete_after()
+                'delete_after' => static::delete_after(),
+				'updated_at' => Carbon::now()->timestamp,
+				'created_at' => Carbon::now()->timestamp,
             ]);
 
             return (string) $result->getInsertedId();
