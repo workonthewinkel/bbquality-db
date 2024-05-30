@@ -357,7 +357,8 @@
                 'rows' => [],
                 'analytics' => [],
                 'discounts' => [],
-                'delete_after' => static::delete_after()
+                'delete_after' => static::delete_after(),
+				'updated_at' => Carbon::now()->timestamp,
             ]);
 
             return (string) $result->getInsertedId();
