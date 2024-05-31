@@ -2,7 +2,6 @@
 
     namespace BbqData\Models\Handlers;
 
-    use BbqOrders\Loggers\StockEvents;
     use BbqData\Models\Notification;
     use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -80,7 +79,11 @@
                 }
 
                 $product = $this->object->title ?? $this->object->description;
-                StockEvents::event( $flushed .  ' for ' . $product . ' stock is now: ' . $stock );
+
+				//log stock events if the StockEvents class exists
+				if( class_exists( "\\BbqOrders\\Loggers\\StockEvents" ) ){
+                	\BbqOrders\Loggers\StockEvents::event( $flushed .  ' for ' . $product . ' stock is now: ' . $stock );
+				}
             }
             
             $this->createWarning( $stock );
