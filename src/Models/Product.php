@@ -51,6 +51,41 @@
             return $this->hasMany('BbqData\Models\ProductVariation', 'product_id', 'ID' );
         }
 
+		/**
+		 * A product has many postmeta
+		 *
+		 * @return hasMany
+		 */
+		public function postmeta()
+		{
+			return $this->hasMany('BbqData\Models\PostMeta', 'post_id', 'ID' );
+		}
+
+
+		/**
+		 * Get a piece of postmeta
+		 *
+		 * @param string $key
+		 * @return mixed
+		 */
+		public function get_meta( $key )
+		{
+			if( $this->relationLoaded( 'postmeta' ) ){
+				return $this->postmeta->where( 'meta_key', $key )->first();
+			}	
+
+			return null;
+		}
+
+		public function get_metas( array $keys = [] )
+		{
+			$values = [];
+			foreach( $keys as $key ){
+				$values[ $key ] = $this->get_meta( $key );
+			}
+
+			return $values;
+		}
 
         /**
          * Return a stock object
