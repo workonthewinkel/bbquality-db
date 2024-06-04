@@ -29,11 +29,12 @@
         /**
          * Constructor
          */
-        public function __construct( string $slug, string $email = '' )
+        public function __construct( string $slug, string $email = '', string $cookie = '' )
         {
             $this->connect_collection();
             $this->slug = $slug;
 			$this->email = $email;
+            $this->cookie = $cookie;
 
 			$data = $this->get_product_set();
 			if( !is_null( $data ) ){
