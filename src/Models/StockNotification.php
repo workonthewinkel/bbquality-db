@@ -2,9 +2,7 @@
 
     namespace BbqData\Models;
 
-    use BbqData\Contracts\Model;
-
-    class StockNotification extends Model
+    class StockNotification extends PostNotification
     {
 
 
@@ -13,24 +11,7 @@
          *
          * @var string
          */
-        protected $table = 'stock_notifications';
-
-        /**
-         * Only the id is guarded
-         *
-         * @var array
-         */
-        protected $guarded = ['id'];
-
-        /**
-         * Return the user connection
-         *
-         * @return void
-         */
-        public function user()
-        {
-            return $this->belongsTo('BbqData\Models\User', 'user_id', 'ID' );    
-        }
+        protected $table = 'post_notifications';
 
         /**
          * An order row has a Product
@@ -39,7 +20,7 @@
          */
         public function product()
         {
-            return $this->belongsTo('BbqData\Models\Product', 'product_id', 'ID' );
+            return $this->belongsTo('BbqData\Models\Product', 'post_id', 'ID' );
         }
 
 
