@@ -48,7 +48,7 @@
          */
         public function variations()
         {
-            return $this->hasMany('BbqData\Models\ProductVariation', 'product_id', 'ID' );
+            return $this->hasMany( ProductVariation::class, 'product_id', 'ID' );
         }
 
 

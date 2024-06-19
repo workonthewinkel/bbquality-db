@@ -51,6 +51,17 @@
         }
 
 
+		/**
+		 * A post has many reviews
+		 *
+		 * @return void
+		 */
+		public function reviews()
+		{
+			return $this->hasMany( Review::class, 'post_id', 'ID' );
+		}
+
+
         /**
          * Returns the upsells or bought-together products for this
          *
