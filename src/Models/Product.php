@@ -77,16 +77,6 @@
 			return null;
 		}
 
-		public function get_metas( array $keys = [] )
-		{
-			$values = [];
-			foreach( $keys as $key ){
-				$values[ $key ] = $this->get_meta( $key );
-			}
-
-			return $values;
-		}
-
         /**
          * Return a stock object
          *
