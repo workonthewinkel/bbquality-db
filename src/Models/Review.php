@@ -6,8 +6,10 @@
 
     class Review extends Model
     {
+
+        protected $table = 'reviews';
         
-        /**
+		/**
          * Only the id is guarded
          *
          * @var array
@@ -46,5 +48,15 @@
             return $this->belongsTo( Order::class );
         }
 
+		/**
+		 * Only show valid reviews
+		 *
+		 * @param Builder $builder
+		 * @return Builder
+		 */
+		public function scopeValid( $builder )
+		{
+			return $builder->where( 'valid', true );
+		}
 
     }
