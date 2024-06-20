@@ -148,4 +148,21 @@
             
             return $result;
         }
+
+
+		/**
+		 * Query meta fields
+		 *
+		 * @return void
+		 */
+		public function get_metas( array $keys )
+		{
+			$response = [];
+			$metas = $this->postmeta()->whereIn('meta_key', $keys )->get();
+			foreach( $metas as $meta ){
+				$response[ $meta['meta_key'] ] = $meta->toArray();
+			}
+			
+			return $response;
+		}
     }

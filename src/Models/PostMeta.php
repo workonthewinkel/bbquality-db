@@ -37,4 +37,12 @@
         protected $guarded = ['id'];
 
 
-    }
+		/**
+		 * Post meta belongs to a post
+		 */
+		public function post()
+		{
+			return $this->belongsTo( Post::class );
+		}
+
+	}

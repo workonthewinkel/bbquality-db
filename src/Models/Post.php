@@ -32,8 +32,6 @@
 
         /**
          * A Post has many relations
-         *
-         * @return void
          */
         public function relations()
         {
@@ -42,8 +40,6 @@
 
         /**
          * A Post has many images
-         *
-         * @return void
          */
         public function images()
         {
@@ -51,10 +47,17 @@
         }
 
 
+		/**
+		 * A post has many post-meta
+		 */
+		public function postmeta()
+		{
+			return $this->hasMany( PostMeta::class, 'post_id', 'ID' );
+		}
+
+
         /**
          * Returns the upsells or bought-together products for this
-         *
-         * @return void
          */
         public function get_upsells( $amount = 10 )
         {
