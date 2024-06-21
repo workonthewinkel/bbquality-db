@@ -37,7 +37,7 @@
          */
         public function membership()
         {
-            return $this->hasOne('BbqData\Models\Membership', 'user_id', 'ID' );
+            return $this->hasOne( Membership::class, 'user_id', 'ID' );
         }
 
 
@@ -48,7 +48,7 @@
          */
         public function customers()
         {
-            return $this->hasMany('BbqData\Models\Customer', 'user_id', 'ID' );
+            return $this->hasMany( Customer::class , 'user_id', 'ID' );
         }
 
 
@@ -59,8 +59,18 @@
          */
         public function loyalty()
         {
-            return $this->hasOne('BbqData\Models\Loyalty', 'user_id', 'ID' );
+            return $this->hasOne( Loyalty::class, 'user_id', 'ID' );
         }
+
+		/**
+		 * A user has many reviews
+		 *
+		 * @return void
+		 */
+		public function reviews()
+		{
+			return $this->hasMany( Review::class, 'user_id', 'ID' );
+		}
 
 
         /**
