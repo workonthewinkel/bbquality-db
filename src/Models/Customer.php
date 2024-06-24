@@ -168,7 +168,7 @@
 
 			//then query the result
 			$result = $this->where( $clause, $value )
-				 		   ->where( 'created_at', '>=', Carbon::now()->subMonths( 6 ) )
+				 		   ->where( 'created_at', '>=', Carbon::now()->subMonths( 3 ) )
 				 		   ->where( 'id', '!=', $this->id )
 				 		   ->get();
 			
