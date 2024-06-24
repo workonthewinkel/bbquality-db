@@ -2,6 +2,7 @@
 
     namespace BbqData\Models;
 
+	use Carbon\Carbon;
     use BbqData\Contracts\Model;
 
     class Customer extends Model
@@ -147,6 +148,38 @@
             $string .= '<br/>'. $shipping['country'];
             return $string;
         }
+
+
+		/**
+		 * Check if this customer is a returning customer
+		 *
+		 * @return bool
+		 */
+		public function getIsReturningAttribute(): bool
+		{
+			//first see if we have a hard user_id to match on,
+			//but default to email:
+			$clause = 'email';
+			$value = $this->email;
+			if( !is_null( $this->user_id ) ){
+				$clause = 'user_id';
+				$value = $this->user_id;
+			}
+
+			//then query the result
+			$result = $this->where( $clause, $value )
+				 		   ->where( 'created_at', '>=', Carbon::now()->subMonths( 6 ) )
+				 		   ->where( 'id', '!=', $this->id )
+				 		   ->get();
+			
+			//if there's nothing found, this is not a returning customer
+			if( $result->isEmpty() ){
+				return false;
+			}
+
+			
+			return true;
+		}
 
 
         /**
