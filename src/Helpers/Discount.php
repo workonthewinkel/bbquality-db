@@ -59,7 +59,6 @@
             }
 
             $discount = static::find( $row->discount_type );
-			dd( $discount );
             if( is_null( $discount ) || $row->quantity < $discount['quantity'] ){
                 return 0;
             }
