@@ -25,6 +25,11 @@
 		 */
 		protected $email;
 
+		/**
+		 * Cookie of this product set
+		 */
+		protected $cookie;
+
 
         /**
          * Constructor
@@ -52,6 +57,23 @@
             return 'product_sets';   
         }
 
+
+		 /**
+         * Create a new cart in Mongo,
+         * Send back the ID:
+         */
+        public static function create( $data ) 
+        {
+			//set dates:
+			$data['created_at'] = Carbon::now()->timestamp;
+            $data['updated_at'] = Carbon::now()->timestamp;
+			$data['delete_after'] = static::delete_after();
+
+			//save product set:
+            $result = static::get_collection( 'product_sets' )->insertOne( $data );
+            return (string) $result->getInsertedId();
+        }  
+
         /*====================================*/
         /*          Getters                   */
         /*====================================*/
@@ -71,22 +93,6 @@
         }
 
 
-        /**
-         * Returns wether or not a cart is new or old:
-         *
-         * @return boolean
-         */
-        public function is_old(): bool
-        {
-            $updated_at = $this->get( 'updated_at', null );
-			//a cart is considered old if it's been over 30 minutes:
-            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInMinutes( Carbon::now() ) > 30 ){
-                return true;
-            }
-            return false;
-        }
-
-
 		/**
          * Does this set exist?
          */
@@ -102,9 +108,23 @@
          */
         public function get_product_set(): ?array 
         {
+			$response = [];
             $result = $this->collection->findOne( $this->id() );
             if( !is_null( $result ) ){
-                return iterator_to_array( $result );
+				$result = iterator_to_array( $result );
+				
+				foreach( $result as $key => $value ){
+
+					//get the array value
+					if( is_a( $value, 'MongoDB\Model\BSONArray' ) ){
+						$response[ $key ] = $value->getArrayCopy();
+					}else{
+						$response[ $key ] = $value;
+					}
+
+				}
+
+                return $response;
             }
 
             return null;
