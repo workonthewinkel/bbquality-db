@@ -197,8 +197,8 @@
             $total = $loyalty->points_spent;
             $balance = $loyalty->points_balance;
 
-            $loyalty->points_spent = absint( ( $total + $sub ) );
-            $loyalty->points_balance = absint( ( $balance - $sub ) );
+            $loyalty->points_spent = intval( ( $total + $sub ) );
+            $loyalty->points_balance = intval( ( $balance - $sub ) );
             $loyalty->save();
         }
     }
