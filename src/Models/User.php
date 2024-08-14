@@ -175,8 +175,8 @@
             $total = $loyalty->points_saved;
             $balance = $loyalty->points_balance;
 
-            $loyalty->points_saved = absint( ( $total + $add ) );
-            $loyalty->points_balance = absint( ( $balance + $add ) );
+            $loyalty->points_saved = intval( ( $total + $add ) );
+            $loyalty->points_balance = intval( ( $balance + $add ) );
             $loyalty->save();
         }
 
