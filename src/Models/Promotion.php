@@ -29,7 +29,7 @@
          */
         public function product()
         {
-            return $this->belongsTo( Product::class );
+            return $this->belongsTo( Product::class, 'product_id', 'ID');
         }
         
         /**
@@ -39,7 +39,7 @@
          */
         public function variation()
         {
-            return $this->belongsTo( ProductVariation::class );
+            return $this->hasOne( ProductVariation::class, 'variation_id', 'id');
         }
 
 		
