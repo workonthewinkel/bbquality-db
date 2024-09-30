@@ -23,7 +23,7 @@
             'object',
             'object_id',
             'status',
-            'replies',
+            'retries',
             'action',
             'run_after'
         ];
