@@ -59,4 +59,21 @@
 			return $builder->where( 'valid', true );
 		}
 
+
+		/**
+		 * Return the reviewers name
+		 *
+		 * @return string
+		 */
+		public function getReviewerNameAttribute()
+		{
+			if( !is_null( $this->user_id ) ){
+				return $this->user->display_name;
+			}else if( !is_null( $this->order_id ) ){
+				return $this->order->customer->name;
+			}
+
+			return '';
+		}
+
     }

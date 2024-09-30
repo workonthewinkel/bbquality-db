@@ -169,8 +169,8 @@
         public function has_free_shipping()
         {
             //check subtotal:
-            //@todo put 75 in a Shipping helper
-            if( $this->get_subtotal_without_gift_certificates() >= 75 ){
+            //@todo put 100 in a Shipping helper
+            if( $this->get_subtotal_without_gift_certificates() >= 100 ){
                 return true;
             }
 
@@ -365,6 +365,7 @@
                 'rows' => [],
                 'analytics' => [],
                 'discounts' => [],
+				'utm_tags' => [],
                 'delete_after' => static::delete_after(),
 				'updated_at' => Carbon::now()->timestamp,
 				'created_at' => Carbon::now()->timestamp,
