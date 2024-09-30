@@ -52,7 +52,7 @@
 		public static function forThreshold( $queried_threshold )
 		{
 			$response = \collect([]);
-			$results = static::current()->where('threshold', '<=', $queried_threshold )->ascending()->get();
+			$results = static::current()->where('threshold', '<=', (int)$queried_threshold )->ascending()->get();
 			if( !$results->isEmpty() ){
 				$results = $results->groupBy( 'threshold' );
 		
@@ -64,6 +64,27 @@
 			}
 
 			return $response;
+		}
+
+		/**
+		 * Return the promotions for a certain threshold
+		 *
+		 * @param float $threshold
+		 * @return Promotion
+		 */
+		public static function nextThreshold( $queried_threshold )
+		{
+			$response = \collect([]);
+			$results = static::current()->ascending()->get();
+			if( !$results->isEmpty() ){
+				foreach( $results as $promotion ){
+					if( $queried_threshold < $promotion->threshold ){
+						return $promotion->threshold;
+					}
+				}
+			}
+
+			return 0;
 		}
 
 		/**
