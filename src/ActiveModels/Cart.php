@@ -168,13 +168,17 @@
          */
         public function has_free_shipping()
         {
-            //check subtotal:
-            //@todo put 100 in a Shipping helper
+			//on certain dates, you get free shipping
+            if( Carbon::now() > '2023-03-03 23:59:59' && Carbon::now() < '2023-03-06 00:00:00') {
+                return true;
+            }
+
+            //if the subtotal is above a certain threshold, get free shipping
             if( $this->get_subtotal_without_gift_certificates() >= 100 ){
                 return true;
             }
 
-            //check coupons:
+            //check if we have a coupon that offers free shipping
             foreach( $this->get('discounts', []) as $discount ){
                 if( $discount['free_shipping'] || $discount['free_shipping'] == 1 ){
                     return true;
@@ -185,22 +189,21 @@
             $product_ids = explode( ',', env('free_shipping_products') );
 
             foreach( $this->get('rows',[]) as $row ){
+
+				//free_shipping_products get (duh) free shipping
                 if( in_array( $row['id'], $product_ids ) ){
                     return true;
                 }
 
+				//if you bought a product with points, you get free shipping:
                 if( $row['points_spent'] > 0 ){
                     return true;
                 }
             }
 
-            //check membership:
+            //members get free shipping:
             if( !is_null( User::current() ) && !is_null( User::current()->membership ) ){
                 return true; 
-            }
-
-            if( Carbon::now() > '2023-03-03 23:59:59' && Carbon::now() < '2023-03-06 00:00:00') {
-                return true;
             }
 
             return false;
