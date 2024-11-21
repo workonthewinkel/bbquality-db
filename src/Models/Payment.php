@@ -199,7 +199,7 @@
          */
         public function needsPaymentRedirect()
         {
-            if( $this->method == 'bank-transfer' || $this->amount <= 0 ){
+            if( $this->method == 'bank-transfer' || $this->amount <= 0 || $this->status == 'paid' ){
                 return false;
             }
 
