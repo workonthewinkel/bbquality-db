@@ -45,7 +45,7 @@
          */
         public function order()
         {
-            return $this->belongsTo('BbqData\Models\Order');
+            return $this->belongsTo( Order::class );
         }
         
         /**
@@ -55,7 +55,7 @@
          */
         public function membership()
         {
-            return $this->hasOne('BbqData\Models\Membership');
+            return $this->hasOne( Membership::class );
         }
 
         /**

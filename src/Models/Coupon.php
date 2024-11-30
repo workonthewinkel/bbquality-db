@@ -61,23 +61,11 @@
          */
         public function orders()
         {
-            return $this->belongsToMany('BbqData\Models\Order', $this->pivot )
+            return $this->belongsToMany( Order::class, $this->pivot )
                         ->withPivot('status', 'amount', 'created_at', 'updated_at')
                         ->withTimestamps();
         }
 
-        
-        /**
-         * A coupon can belong to many carts
-         *
-         * @return void
-         */
-        public function carts()
-        {
-            return $this->belongsToMany('BbqData\Models\Cart', $this->pivot )
-                        ->withPivot('status', 'amount', 'created_at', 'updated_at')
-                        ->withTimestamps();
-        }
 
         /**
          * Return a coupons users
@@ -86,7 +74,7 @@
          */
         public function users()
         {
-            return $this->belongsToMany('BbqData\Models\User', 'bbquality_coupon_users' )
+            return $this->belongsToMany( User::class, 'bbquality_coupon_users' )
                         ->withPivot('ip');
         }
 

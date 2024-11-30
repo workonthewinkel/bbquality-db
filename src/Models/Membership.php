@@ -31,7 +31,7 @@
          */
         public function user()
         {
-            return $this->belongsTo('BbqData\Models\User');
+            return $this->belongsTo( User::class );
         }
 
         /**
@@ -41,7 +41,7 @@
          */
         public function product()
         {
-            return $this->hasOne( 'BbqData\Models\Product', 'ID', 'product_id' );   
+            return $this->hasOne( Product::class, 'ID', 'product_id' );   
         }
 
         /**
@@ -51,7 +51,7 @@
          */
         public function payment()
         {
-            return $this->belongsTo('BbqData\Models\Payment');
+            return $this->belongsTo( Payment::class );
         }
 
          /**
@@ -61,7 +61,7 @@
          */
         public function orders()
         {
-            return $this->belongsToMany('BbqData\Models\Order', 'bbquality_membership_orders' );
+            return $this->belongsToMany( Order::class, 'bbquality_membership_orders' );
         }
 
 

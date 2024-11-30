@@ -31,7 +31,7 @@
          */
         public function coupons()
         {
-            return $this->hasMany('BbqData\Models\Coupon');
+            return $this->hasMany( Coupon::class );
         }
     
     }

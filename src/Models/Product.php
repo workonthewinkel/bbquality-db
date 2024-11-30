@@ -58,7 +58,7 @@
 		 */
 		public function postmeta()
 		{
-			return $this->hasMany('BbqData\Models\PostMeta', 'post_id', 'ID' );
+			return $this->hasMany( PostMeta::class, 'post_id', 'ID' );
 		}
 
 

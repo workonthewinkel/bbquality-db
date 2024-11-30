@@ -29,7 +29,7 @@
          */
         public function user()
         {
-            return $this->belongsTo('BbqData\Models\User', 'user_id', 'ID' );    
+            return $this->belongsTo( User::class, 'user_id', 'ID' );    
         }
 
         /**
@@ -39,7 +39,7 @@
          */
         public function product()
         {
-            return $this->belongsTo('BbqData\Models\Product', 'product_id', 'ID' );
+            return $this->belongsTo( Product::class, 'product_id', 'ID' );
         }
 
 

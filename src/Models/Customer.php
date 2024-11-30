@@ -29,7 +29,7 @@
          */
         public function order()
         {
-            return $this->hasOne('BbqData\Models\Order');
+            return $this->hasOne( Order::class );
         }
 
 
@@ -40,7 +40,7 @@
          */
         public function user()
         {
-            return $this->hasOne('BbqData\Models\User', 'ID', 'user_id' );    
+            return $this->hasOne( User::class, 'ID', 'user_id' );    
         }
 
 

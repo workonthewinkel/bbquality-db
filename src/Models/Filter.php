@@ -28,7 +28,7 @@
          */
         public function indexes()
         {
-            return $this->hasMany('BbqData\Models\Index');
+            return $this->hasMany( Index::class );
         }
 
 

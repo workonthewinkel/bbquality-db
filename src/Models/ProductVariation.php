@@ -4,7 +4,6 @@
 
     use BbqData\Contracts\Model;
     use BbqData\Models\Handlers\Stock;
-    use BbqData\Models\Scopes\ProductScope;
 
     class ProductVariation extends Model
     {
@@ -38,7 +37,7 @@
          */
         public function product()
         {
-            return $this->hasOne('BbqData\Models\Product', 'ID', 'product_id' );
+            return $this->hasOne( Product::class, 'ID', 'product_id' );
         }
         
 

@@ -31,7 +31,7 @@
          */
         public function user()
         {
-            return $this->hasOne('BbqData\Models\User', 'ID', 'user_id' );    
+            return $this->hasOne( User::class, 'ID', 'user_id' );    
         }
 
 

@@ -43,7 +43,7 @@
          */
         public function rows()
         {
-            return $this->hasMany('BbqData\Models\OrderRow', 'order_id', 'id' );
+            return $this->hasMany( OrderRow::class, 'order_id', 'id' );
 
         }
 
@@ -55,7 +55,7 @@
          */
         public function coupons()
         {
-            return $this->belongsToMany('BbqData\Models\Coupon', 'bbquality_coupon_order', 'order_id', 'id' )
+            return $this->belongsToMany( Coupon::class, 'bbquality_coupon_order', 'order_id', 'id' )
                         ->withPivot('status', 'amount', 'created_at', 'updated_at')
                         ->withTimestamps();
         }
@@ -68,7 +68,7 @@
          */
         public function payment()
         {
-            return $this->hasOne('BbqData\Models\Payment', 'order_id', 'id' );
+            return $this->hasOne( Payment::class, 'order_id', 'id' );
         }
         
 

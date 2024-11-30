@@ -39,7 +39,7 @@
          */
         public function filter()
         {
-            return $this->belongsTo('BbqData\Models\Filter');
+            return $this->belongsTo( Filter::class );
         }
 
         /**

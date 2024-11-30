@@ -28,7 +28,7 @@
          */
         public function user()
         {
-            return $this->belongsTo('BbqData\Models\User');
+            return $this->belongsTo( User::class );
         }
 
 
