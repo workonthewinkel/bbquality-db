@@ -578,7 +578,11 @@
                 $this->shipping_key === 'belgium-delivery'
             ){
                 return 'pakketpartner';
-            }
+
+            }else if( $this->shipping_key === 'chilled-delivery' ){
+				return 'chillbill';
+			
+			}
 
             return 'bbquality';
         }
