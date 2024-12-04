@@ -641,7 +641,8 @@
         public function getTotalPointsAttribute()
         {
             $totals = $this->getTotals( true );
-            $points = floor( $totals['subtotal'] / 25 ); //base points
+			$subtotal = $totals['subtotal'] - $totals['gift-certificates'];
+            $points = floor( $subtotal / 25 ); //base points
             foreach( $this->rows as $row ){
                 $points += $row->points_earned;
             }
