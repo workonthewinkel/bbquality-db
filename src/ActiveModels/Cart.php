@@ -265,6 +265,30 @@
         }
 
 
+		/**
+		 * Calculate the amount of applied discounts
+		 *
+		 * @return integer
+		 */
+		public function discount_total():float {
+			
+			$total = 0;
+			$subtotal = $this->get_discount_applicable_subtotal();
+
+			//loop through discounts and calcultate the total discount gotten
+			foreach( $this->get( 'discounts', []) as $discount ){
+				if( $discount['gift_certificate'] == false ){
+					if( $discount['type'] == 'percentage' ){
+						$total += (float)$subtotal * ( $discount['amount'] / 100 );
+					}else{
+						$total += (float)$discount['amount'];
+					}
+				}
+			}
+
+			return $total;
+		}
+
         /**
          * Returns wether or not a cart is new or old:
          *
