@@ -280,6 +280,9 @@
             //remove gift certificates, they don't count:
             $subtotal = $totals['subtotal'] - $gift_certificates;
 
+            //substract applied discounts (all applied coupons which are not giftcertificates)
+            $subtotal -= $this->discount_total;
+
             //loop through rows:
             foreach( $this->rows as $row ){
                 //if it's charity, subtract the total:
