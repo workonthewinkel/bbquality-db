@@ -227,6 +227,17 @@
             });
         }
 
+		/**
+		 * Return all coupons related to a lottery
+		 * @todo: delete this once the lottery is done.
+		 */
+		public function scopeLottery( $query )
+		{
+			return $query->whereHas( 'orders', function( $coupon ) {
+                $coupon->where( $this->pivot.'.status', 5 );
+            });
+		}
+
         /**
          * Return all redeemed coupons
          *
