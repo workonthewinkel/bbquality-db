@@ -147,6 +147,11 @@
             //add the carbon product, because it doesn't count as a cart item:
             $certificate_ids[] = CarbonReduction::getProduct();
 
+			//add the lottery ticket:
+			if( !is_null( env( 'LOTTERY_TICKET_ID' ) ) ){
+				$certificate_ids[] = env( 'LOTTERY_TICKET_ID' );
+			}
+
             $rows = $this->get('rows', []);
             if( empty( $rows ) ){
                 return false;
