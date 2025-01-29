@@ -304,13 +304,13 @@
 			$created_at = $this->get( 'created_at', null );
             $updated_at = $this->get( 'updated_at', null );
 
-			//always check the created_at first. A cart is old if it's been over 30 minutes:
-			if( !is_null( $created_at ) && Carbon::createFromTimestamp( $created_at )->diffInMinutes( Carbon::now() ) > 30 ){
+			//always check the created_at first. A cart is old if it's been over 20 minutes:
+			if( !is_null( $created_at ) && Carbon::createFromTimestamp( $created_at )->diffInMinutes( Carbon::now() ) > 20 ){
 				return true;
 			}
 
 			//fallback to the updated_at:
-            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInMinutes( Carbon::now() ) > 30 ){
+            if( !is_null( $updated_at ) && Carbon::createFromTimestamp( $updated_at )->diffInMinutes( Carbon::now() ) > 20 ){
                 return true;
             }
 
