@@ -126,6 +126,11 @@
                     continue;
                 }
                 
+				// if it's lottery
+				if( $row['id'] == env( 'LOTTERY_TICKET_ID' ) ){
+					continue;
+				}
+
                 //if it's in sale
                 $subtotal -= ( $row['price'] * $row['quantity'] );
 
