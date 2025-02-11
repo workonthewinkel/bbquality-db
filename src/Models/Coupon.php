@@ -39,6 +39,7 @@
             'valid_from',
             'valid_through',
             'usage',
+			'remarks',
             'used',
             'is_gift_certificate',
             'free_shipping',
