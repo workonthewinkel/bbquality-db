@@ -219,6 +219,31 @@
             return false;
         }
 
+		/*====================================*/
+		/*			Rows
+		/*====================================*/
+
+		/**
+		 * Create the row id
+		 */
+		public static function create_row_id( $row ): string {
+		
+			// Base is just product_id
+			$key = $row['id'];
+
+			// Add variation or points
+			$key .= (int) ($row['variation_id'] ?? 0 );
+			$key .= (int) $row['points_spent'];
+
+			// Add coupon id, if this product was added by a coupon
+			if( isset( $row['coupon_id'] ) && $row['coupon_id'] != 0 ){
+				$key .= $row['coupon_id'];
+			}
+
+			// Return as a hash
+			return md5( $key );
+		}
+
 
         /*====================================*/
         /*          Discounts                 */
