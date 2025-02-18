@@ -239,7 +239,7 @@
 			if( isset( $row['coupon_id'] ) && $row['coupon_id'] != 0 ){
 				$key .= $row['coupon_id'];
 			}
-
+			
 			// Return as a hash
 			return md5( $key );
 		}
