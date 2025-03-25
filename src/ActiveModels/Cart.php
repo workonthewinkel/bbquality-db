@@ -428,6 +428,7 @@
                 'analytics' => [],
                 'discounts' => [],
 				'utm_tags' => [],
+                'agent' => '',
                 'delete_after' => static::delete_after(),
 				'updated_at' => Carbon::now()->timestamp,
 				'created_at' => Carbon::now()->timestamp,
