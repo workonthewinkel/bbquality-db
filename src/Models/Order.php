@@ -577,12 +577,17 @@
         {
             if( 
                 $this->shipping_key === 'evening-delivery' ||
+                $this->shipping_key === 'evening-delivery-trunkrs' ||
                 $this->shipping_key === 'day-delivery' ||
                 $this->shipping_key === 'belgium-delivery'
             ){
                 return 'pakketpartner';
 
-            }else if( $this->shipping_key === 'chilled-delivery' ){
+            }else if( 
+                $this->shipping_key === 'chilled-delivery' ||
+                $this->shipping_key === 'evening-delivery-chill-bill' ||
+                $this->shipping_key === 'day-delivery-chill-bill'
+            ){
 				return 'chillbill';
 			
 			}
