@@ -6,6 +6,7 @@
     use BbqData\Contracts\Model;
     use BbqData\Helpers\Discount;
     use BbqData\Models\Handlers\Stock;
+	use BbqData\Models\Scopes\VisibleOrderRowScope;
 
     class OrderRow extends Model{
 
@@ -31,6 +32,17 @@
             'discount_type',
             'product_variation_id'
         ];
+
+
+		/**
+         * When creating a product, always take the scope with you
+         *
+         * @return void
+         */
+        protected static function boot() {
+            parent::boot();
+            static::addGlobalScope( new VisibleOrderRowScope() );
+        }
 
         /**
          * An order row has a Product variation
