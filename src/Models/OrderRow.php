@@ -17,21 +17,7 @@
          * @var string
          */
         protected $table = 'order_rows';
-
-        protected $fillable = [
-            'description',
-            'price',
-            'original_price',
-            'quantity',
-            'vat',
-            'on_sale',
-            'product_id',
-            'stock_reduced',
-            'points_spent',
-            'points_earned',
-            'discount_type',
-            'product_variation_id'
-        ];
+        protected $guarded = ['id'];
 
 
 		/**
