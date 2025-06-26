@@ -64,6 +64,7 @@
                         ->where('status', '!=', 'cancelled' )
                         ->where('status', '!=', 'cart' )
                         ->where('status', '!=', 'new' )
+                        ->where('status', '!=', 'open' )
                         ->whereIn( 'customer_id', $customers )
                         ->with('rows','payment')    
                         ->orderBy('created_at', 'DESC');
