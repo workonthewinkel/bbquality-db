@@ -649,14 +649,13 @@
         public function getTotalPointsAttribute()
         {
             $totals = $this->getTotals( true );
-			$subtotal = $totals['subtotal'] - $totals['gift-certificates'];
+			$subtotal = $totals['subtotal'] - $this->getCertificateTotal() + $totals['discount'];
             $points = floor( $subtotal / 25 ); //base points
             foreach( $this->rows as $row ){
                 $points += $row->points_earned;
             }
             return $points;
         }
-
         /**
          * Return the next order number
          *
