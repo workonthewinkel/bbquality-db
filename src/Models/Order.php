@@ -39,6 +39,14 @@
         protected $casts = [
             'shipping_info' => Json::class,
         ];
+
+        /**
+         * The courrier string depening on the shipping_key
+         *
+         * @var array
+        */
+        protected $appends = ['courrier'];
+                
         
         /**
          * An order has rows:
@@ -293,6 +301,30 @@
             }
                 
             return $subtotal;
+        }
+
+        /**
+         * Return the courrier this is contructed using the shipping_key attribute
+         *
+         * @return String
+         */
+        public function getCourrierAttribute() 
+        {
+            switch( $this->shipping_key )  {
+                case 'evening-delivery-trunkrs' :
+                case 'evening-delivery' :
+                case 'belgium-delivery' :
+                    return 'trunkrs';
+                break;
+                case 'chilled-delivery' :
+                case 'evening-delivery-chill-bill' :
+                case 'day-delivery-chill-bill' :
+                    return 'chill-bill';
+                break;
+                default:
+                    return $this->shipping_key;
+                break;
+            }
         }
         
 
