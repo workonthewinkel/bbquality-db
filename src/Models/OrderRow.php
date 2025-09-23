@@ -50,6 +50,16 @@
             return $this->belongsTo('BbqData\Models\Product', 'product_id', 'ID' );
         }
 
+		/**
+         * A order row belongs to an order.
+         * 
+         * @return Order
+         */
+        public function order()
+        {
+            return $this->belongsTo('BbqData\Models\Order', 'order_id', 'id' );
+        }
+
         /**
          * Return the correct stock handler,
          * depending on if we're dealing with a variation     
