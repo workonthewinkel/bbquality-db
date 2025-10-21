@@ -313,17 +313,13 @@
             switch( $this->shipping_key )  {
                 case 'evening-delivery-trunkrs' :
                 case 'evening-delivery' :
+                case 'belgium-delivery' :
                     return 'trunkrs';
                 break;
-                case 'belgium-delivery' :
-                    return 'trunkrs belgium';
-                break;
-                case 'evening-delivery-chill-bill' :
-                    return 'chill-bill evening';
-                break;
                 case 'chilled-delivery' :
+                case 'evening-delivery-chill-bill' :
                 case 'day-delivery-chill-bill' :
-                    return 'chill-bill day';
+                    return 'chill-bill';
                 break;
                 default:
                     return $this->shipping_key;
@@ -712,6 +708,41 @@
             return $new;
         }
 
+
+        /**
+         * Return the source id
+         *
+         * @return int
+         */
+        public static function get_source_id( string $name = null ): int {
+            // return the source id or 1 if the source is not found
+            return static::sources()[ $name ] ?? 1;
+        }
+
+        /**
+         * Return the possible sources  
+         */
+        public static function sources(): array {
+            return [
+                'bbquality.nl' => 1,
+                'paymentlink' => 2
+            ];
+        }
+
+        /**
+         * Return the source as an object
+         *
+         * @return stdClass
+         */
+        public function getSourceAttribute(): stdClass {
+
+            $id = $this->source_id;
+
+            return (object) [
+                'id' => $id,
+                'name' => static::sources( $id )
+            ];
+        }
 
         /**
          * Custom boot function
