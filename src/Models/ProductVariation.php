@@ -9,13 +9,6 @@
     class ProductVariation extends Model
     {
         /**
-         * Don't keep timestamps 
-         *
-         * @var boolean
-         */
-        public $timestamps = false;
-
-        /**
          * Customers table
          *
          * @var string
