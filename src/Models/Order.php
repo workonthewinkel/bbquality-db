@@ -312,14 +312,22 @@
         {
             switch( $this->shipping_key )  {
                 case 'evening-delivery-trunkrs' :
+                    return 'trunkrs-evening';
+                break;
                 case 'evening-delivery' :
+                    return 'trunkrs-evening';
+                break;
                 case 'belgium-delivery' :
-                    return 'trunkrs';
+                    return 'trunkrs-belgium';
                 break;
                 case 'chilled-delivery' :
-                case 'evening-delivery-chill-bill' :
-                case 'day-delivery-chill-bill' :
                     return 'chill-bill';
+                break;
+                case 'evening-delivery-chill-bill' :
+                    return 'chill-bill-evening';
+                break;
+                case 'day-delivery-chill-bill' :
+                    return 'chill-bill-day';
                 break;
                 default:
                     return $this->shipping_key;
