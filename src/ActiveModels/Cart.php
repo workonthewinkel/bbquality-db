@@ -121,18 +121,19 @@
                     continue;   
                 }
 
-                //if it's charity:
+                //if it's charity, it's already subtracted from the subtotal, we shouldn't do
+				//anything with it.
                 if( $row['id'] == CarbonReduction::getProduct() ){
                     continue;
                 }
                 
-				// if it's lottery
+				// if it's lottery, allow a discount to calculate
 				if( $row['id'] == env( 'LOTTERY_TICKET_ID' ) ){
 					continue;
 				}
 
-				//check if the row has any sort of discount:
-				if( $row['price'] !== $row['original_price'] ){
+				//check if the row has any sort of discount, if that's the case, skip it.
+				if( $row['price'] === $row['original_price'] ){
 					continue;
 				}
 
