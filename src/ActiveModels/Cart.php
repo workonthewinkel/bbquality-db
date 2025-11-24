@@ -131,6 +131,11 @@
 					continue;
 				}
 
+				//check if the row has any sort of discount:
+				if( $row['price'] !== $row['original_price'] ){
+					continue;
+				}
+
                 //if it's in sale
                 $subtotal -= ( $row['price'] * $row['quantity'] );
 
