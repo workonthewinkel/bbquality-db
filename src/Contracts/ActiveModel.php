@@ -151,14 +151,14 @@
          */
         public static function get_collection( $name = null ) 
         {
-            $db = env( 'mongo_db' );
-            if( !is_null( env('mongo_user') ) ){
-                $client = new Client( env('mongo_url' ), [
-                    'username' => env( 'mongo_user' ),
-                    'password' => env( 'mongo_pass' )
+            $db = env( 'MONGO_DB' );
+            if( !is_null( env('MONGO_USER') ) ){
+                $client = new Client( env('MONGO_URL' ), [
+                    'username' => env( 'MONGO_USER' ),
+                    'password' => env( 'MONGO_PASS' )
                 ]);
             }else{
-                $client = new Client( env( 'mongo_url' ) );
+                $client = new Client( env( 'MONGO_URL' ) );
             }
 
             if( is_null( $name ) ){

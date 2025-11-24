@@ -116,7 +116,13 @@
             //loop through rows:
             foreach( $this->get('rows', []) as $row ){
 
-                //check if the row has a discount_type:
+				// check if the row has any sort of discount, if that's the case, skip it.
+				// sales don't count for the subtotal.
+				if( $row['price'] === $row['original_price'] ){
+					continue;
+				}
+
+                //check if the row has a discount_type, as a backup to the above line.
                 if( is_null( $row['discount_type'] ) || $row['discount_type'] == '' ){
                     continue;   
                 }
@@ -129,11 +135,6 @@
                 
 				// if it's lottery, allow a discount to calculate
 				if( $row['id'] == env( 'LOTTERY_TICKET_ID' ) ){
-					continue;
-				}
-
-				//check if the row has any sort of discount, if that's the case, skip it.
-				if( $row['price'] === $row['original_price'] ){
 					continue;
 				}
 
