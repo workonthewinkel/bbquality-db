@@ -123,9 +123,9 @@
 				}
 
                 //check if the row has a discount_type, as a backup to the above line.
-                if( is_null( $row['discount_type'] ) || $row['discount_type'] == '' ){
-                    continue;   
-                }
+                // if( is_null( $row['discount_type'] ) || $row['discount_type'] == '' ){
+                //    continue;   
+                // }
 
                 //if it's charity, it's already subtracted from the subtotal, we shouldn't do
 				//anything with it.
