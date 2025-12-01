@@ -692,7 +692,7 @@
 			$subtotal = $totals['subtotal'] - $this->getCertificateTotal() + $totals['discount'];
             $points = floor( $subtotal / 25 ); //base points
             foreach( $this->rows as $row ){
-                $points += $row->points_earned;
+                $points += ($row->points_earned * $row->quantity);
             }
             return $points;
         }
