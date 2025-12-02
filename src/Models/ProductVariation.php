@@ -5,9 +5,12 @@
     use BbqData\Contracts\Model;
     use BbqData\Models\Handlers\Stock;
     use BbqData\Models\Scopes\ProductScope;
+	use Illuminate\Database\Eloquent\SoftDeletes;
 
     class ProductVariation extends Model
     {
+		use SoftDeletes;
+
         /**
          * Customers table
          *
