@@ -43,7 +43,7 @@
 
 
         /**
-         * A relation has a post    
+         * An image belongs to a post    
          *
          * @return Post
          */
