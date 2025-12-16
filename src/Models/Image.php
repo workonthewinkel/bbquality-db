@@ -39,7 +39,7 @@
          * @var array
          */
         const CONTEXTS = ['featured', 'prepared', 'slider', 'content'];
-		const SIZES = ['thumb', 'block', 'large', 'full'];
+		const SIZES = ['thumbnail', 'block', 'large', 'full'];
 
 
         /**
@@ -58,8 +58,8 @@
 		 *
 		 * @return string
 		 */
-		public function getThumbAttribute(): string {
-			return $this->sizes['thumb'] ?? '';
+		public function getThumbnailAttribute(): string {
+			return $this->sizes['thumbnail'] ?? '';
 		}
 
 		/**
