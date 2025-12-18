@@ -101,14 +101,31 @@
 			return $this->sizes['full'] ?? '';
 		}
 
+
+		/**
+		 * Get Either the Prepared or Featured image within a clause
+		 *
+		 * @param array $clauses
+		 * @return Image|null
+		 */
+		public function preparedOrFeatured( array $clauses ): ?Image {
+
+			$result = $this->prepared()->where( $clauses )->first();
+			if( !is_null( $result ) ){
+				return $result;
+			}
+
+			return $this->featured()->where( $clauses )->first();
+		}
+
 		/**
 		 * Return the (single) featured image.
 		 * defaults to null
 		 *
 		 * @return Image|null
 		 */
-		public function scopeFeatured( $query ): ?Image {
-			return $query->where('context', 'featured')->first();
+		public function scopeFeatured( $query ) {
+			return $query->where('context', 'featured');
 		}
 
 		/**
@@ -117,13 +134,8 @@
 		 *
 		 * @return Image|null
 		 */
-		public function scopePrepared( $query ): ?Image {
-			$result = $query->where('context', 'prepared')->first();
-			if( is_null( $result ) == false ){
-				return $result;
-			}
-
-			return $this->featured(); 
+		public function scopePrepared( $query ) {
+			return $query->where('context', 'prepared');
 		}
 
 		/**
@@ -131,8 +143,8 @@
 		 *
 		 * @return Collection
 		 */
-		public function scopeSlider( $query ): Collection {
-			return $query->where('context', 'slider')->get();
+		public function scopeSlider( $query ) {
+			return $query->where('context', 'slider');
 		}
 
 		/**
@@ -140,8 +152,8 @@
 		 *
 		 * @return Collection
 		 */
-		public function scopeContent( $query ): Collection {
-			return $query->where('context', 'content')->get();
+		public function scopeContent( $query ) {
+			return $query->where('context', 'content');
 		}
 
 		
