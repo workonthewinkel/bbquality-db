@@ -3,6 +3,8 @@
     namespace BbqData\Models;
 
     use BbqData\Contracts\Model;
+	use BbqData\Models\Casts\Json;
+	use Illuminate\Support\Collection;
 
     class Image extends Model
     {
@@ -22,95 +24,125 @@
          */
         protected $guarded = ['id'];
 
-
-        /**
-         * Constant with allowed states
+		/**
+         * Cast the object field as a json
          *
          * @var array
          */
-        const CONTEXTS = [
-            'featured' => 0,
-            'slider' => 1,
-            'column' => 2,
-            'content' => 3,
+        protected $casts = [
+            'sizes' => Json::class,
         ];
+
+        /**
+         * Constant with allowed contexts
+         *
+         * @var array
+         */
+        const CONTEXTS = ['featured', 'prepared', 'slider', 'content'];
+		const SIZES = ['thumbnail', 'block', 'large', 'full'];
 
 
         /**
-         * A relation has a post    
+         * An image belongs to a post    
          *
          * @return Post
          */
         public function post()
         {
-            return $this->hasOne( Post::class, 'ID', 'related_post_id' );
+            return $this->hasOne( Post::class, 'ID', 'post_id' );
         }
 
 
-        /**
-         * Return the context as a string   
-         *
-         * @param int $value
-         * @return string
-         */
-        public function getContextAttribute( $value )
-        {
-            return static::context( $value );
-        }
+		/**
+		 * Return the thumbnail of this image
+		 *
+		 * @return string
+		 */
+		public function getThumbnailAttribute(): string {
+			return $this->sizes['thumbnail'] ?? '';
+		}
 
+		/**
+		 * Return the block-size of this image,
+		 * defaults to full
+		 *
+		 * @return string
+		 */
+		public function getBlockAttribute(): string {
+			$block = $this->sizes['block'] ?? '';
+			if( $block !== '' ){
+				return $block;
+			}
 
-        /**
-         * Return all featured images
-         *
-         * @return QueryBuilder
-         */
-        public function scopeFeatured( $query )
-        {
-            return $query->where( 'context', static::context( 'featured' ) );
-        }
+			return $this->full;
+		}
 
+		/**
+		 * Return the large image, defaults to full
+		 *
+		 * @return string
+		 */
+		public function getLargeAttribute(): string {
+			
+			$large = $this->sizes['large'] ?? '';
+			if( $large !== '' ){
+				return $large;
+			}
 
-        /**
-         * Return all slider images
-         * 
-         * @return QueryBuilder
-         */
-        public function scopeSlider( $query )
-        {
-            return $query->where( 'context', static::context( 'slider') );
-        }
+			$this->full;
+		}
 
+		/**
+		 * Return the full image.
+		 *
+		 * @return string
+		 */
+		public function getFullAttribute(): string {
+			return $this->sizes['full'] ?? '';
+		}
 
-        /**
-         * Return all images from columns
-         * 
-         * @return QueryBuilder
-         */
-        public function scopeColumn( $query )
-        {
-            return $query->where( 'context', static::context( 'column') );
-        }
+		/**
+		 * Return the (single) featured image.
+		 * defaults to null
+		 *
+		 * @return Image|null
+		 */
+		public function scopeFeatured( $query ): ?Image {
+			return $query->where('context', 'featured')->first();
+		}
 
+		/**
+		 * Return the (single) prepared image.
+		 * defaults to featured.
+		 *
+		 * @return Image|null
+		 */
+		public function scopePrepared( $query ): ?Image {
+			$result = $query->where('context', 'prepared')->first();
+			if( is_null( $result ) == false ){
+				return $result;
+			}
 
-        /**
-         * Return all images from a posts content
-         *
-         * @param QueryBuilder $query
-         * @return QueryBuilder
-         */
-        public function scopeContent( $query )
-        {
-            return $query->where( 'context', static::context( 'content' ) );
-        }
+			return $this->featured(); 
+		}
 
-        /**
-         * Return a context for this relationship
-         *
-         * @param string $context
-         * @return int
-         */
-        public static function context( $context )
-        {
-            return self::CONTEXTS[ $context ] ?? null;    
-        }
+		/**
+		 * Return all slider images as a laravel collection
+		 *
+		 * @return Collection
+		 */
+		public function scopeSlider( $query ): Collection {
+			return $query->where('context', 'slider')->get();
+		}
+
+		/**
+		 * Return all content images as a laravel collection
+		 *
+		 * @return Collection
+		 */
+		public function scopeContent( $query ): Collection {
+			return $query->where('context', 'content')->get();
+		}
+
+		
     }
