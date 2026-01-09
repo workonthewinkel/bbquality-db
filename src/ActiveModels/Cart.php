@@ -191,7 +191,12 @@
             }
 
             //if the subtotal is above a certain threshold, get free shipping
-            if( $this->get_subtotal_without_gift_certificates() >= 100 ){
+			$threshold = 100;
+			if( class_exists( 'BbqOrders\Helpers\Shipping' ) ){
+				$threshold = \BbqOrders\Helpers\Shipping::get_free_threshold();
+			}
+
+            if( $this->get_subtotal_without_gift_certificates() >= $threshold ){
                 return true;
             }
 
