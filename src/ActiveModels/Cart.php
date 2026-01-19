@@ -183,7 +183,7 @@
          *
          * @return boolean
          */
-        public function has_free_shipping()
+        public function has_free_shipping( $threshold = null )
         {
 			//on certain dates, you get free shipping
             if( Carbon::now() > '2023-03-03 23:59:59' && Carbon::now() < '2023-03-06 00:00:00') {
@@ -191,9 +191,11 @@
             }
 
             //if the subtotal is above a certain threshold, get free shipping
-			$threshold = 100;
-			if( class_exists( 'BbqOrders\Helpers\Shipping' ) ){
-				$threshold = \BbqOrders\Helpers\Shipping::get_free_threshold();
+			if( is_null( $threshold ) ){
+				$threshold = 100; // set default.
+				if( class_exists( 'BbqOrders\Helpers\Shipping' ) ){
+					$threshold = \BbqOrders\Helpers\Shipping::get_free_threshold();
+				}
 			}
 
             if( $this->get_subtotal_without_gift_certificates() >= $threshold ){
