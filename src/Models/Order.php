@@ -626,7 +626,9 @@
             }else if( 
                 $this->shipping_key === 'chilled-delivery' ||
                 $this->shipping_key === 'evening-delivery-chill-bill' ||
-                $this->shipping_key === 'day-delivery-chill-bill'
+                $this->shipping_key === 'day-delivery-chill-bill' || 
+				$this->shipping_key === 'chill-bill-flanders' ||
+				$this->shipping_key === 'chill-bill-walloon'
             ){
 				return 'chillbill';
 			
