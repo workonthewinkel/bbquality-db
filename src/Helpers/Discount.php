@@ -40,6 +40,12 @@
                     'slug'          => 'second-half-price',
                     'quantity'      => 2,
                     'percentage'    => 50
+                ],
+                'second-free' => [
+                    'name'          => '2e gratis',
+                    'slug'          => 'second-free',
+                    'quantity'      => 2,
+                    'percentage'    => 100
                 ]
             ];
         }
