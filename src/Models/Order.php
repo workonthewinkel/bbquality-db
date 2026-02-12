@@ -436,6 +436,17 @@
             return null;
         }
 
+         /**
+         * Return the delivery time of an order
+         *
+         * @return string
+         */
+        public function getCombinedWithAttribute()
+        {
+            $combined_with = key_exists('combined_with', $this->shipping) ? $this->shipping['combined_with'] : [];
+
+            return $combined_with;
+        }
 
         /**
          * Returns the current shipping state
