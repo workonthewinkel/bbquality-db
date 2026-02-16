@@ -437,15 +437,30 @@
         }
 
          /**
-         * Return the delivery time of an order
+         * Return the order_id(s) the order belongs to or the orders that are combined with this order
          *
-         * @return string
+         * @return array
          */
         public function getCombinedWithAttribute()
         {
             $combined_with = key_exists('combined_with', $this->shipping) ? $this->shipping['combined_with'] : [];
 
             return $combined_with;
+        }
+
+         /**
+         * Return the order(s) this order belongs to or the orders that are combined with this order
+         *
+         * @return array of Orders
+         */
+        public function getCombinedOrdersAttribute()
+        {
+            $combined_orders = [];
+            if( count( $this->combined_with ) > 0 ) {
+                $combined_orders = Order::whereIn( 'ID', $this->combined_with )->get();
+            }
+            
+            return $combined_orders;
         }
 
         /**
