@@ -457,10 +457,10 @@
         {
             $combined_orders = [];
             if( count( $this->combined_with ) > 0 ) {
-                $combined_orders = Order::whereIn( 'ID', $this->combined_with )->get();
+                $combined_orders = Order::whereIn( 'ID', $this->combined_with )->whereIn( 'status', ['processing', 'completed'] )->get();
             }
             
-            return $combined_orders;
+            return $combined_orders && !empty( $combined_orders ) ? $combined_orders : [];
         }
 
         /**
