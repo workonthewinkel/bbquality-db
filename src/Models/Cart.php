@@ -196,8 +196,8 @@
         public function has_free_shipping()
         {
             //check subtotal:
-            //@todo put 75 in a Shipping helper
-            if( $this->subtotal_without_giftcertificates >= 75 ){
+            //@todo put 125 in a Shipping helper
+            if( $this->subtotal_without_giftcertificates >= 125 ){
                 return true;
             }
 

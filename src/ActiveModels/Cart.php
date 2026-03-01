@@ -192,7 +192,7 @@
 
             //if the subtotal is above a certain threshold, get free shipping
 			if( is_null( $threshold ) ){
-				$threshold = 100; // set default.
+				$threshold = 125; // set default.
 				if( class_exists( 'BbqOrders\Helpers\Shipping' ) ){
 					$threshold = \BbqOrders\Helpers\Shipping::get_free_threshold();
 				}
