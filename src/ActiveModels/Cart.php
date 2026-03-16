@@ -218,11 +218,6 @@
                 if( in_array( $row['id'], $product_ids ) ){
                     return true;
                 }
-
-				//if you bought a product with points, you get free shipping:
-                if( $row['points_spent'] > 0 ){
-                    return true;
-                }
             }
 
             //members get free shipping:
