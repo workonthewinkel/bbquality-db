@@ -369,7 +369,7 @@
                     return 'success';
                     break;
                 case 'canceled':
-                case 'cancelled':
+                case 'cancelled': 
                     return 'danger';
                     break;
                 case 'on-hold':
@@ -724,6 +724,40 @@
             }
             return $points;
         }
+
+		/**
+		 * Returns the track & trace link for this model
+		 *
+		 * @return string
+		 */
+		public function getTrackTraceLinkAttribute(): string 
+		{
+			$url = '';
+
+			// Only run this in the WordPress context:
+			if( function_exists( 'get_site_url' ) ){
+
+				$url = \get_site_url() . '/track-en-trace';
+				$url = \add_query_arg([
+					'order_number' => $this->order_number,
+					'token' => $this->track_trace_token
+				], $url );
+			}
+
+			return $url;
+		}
+
+
+		/**
+		 * Return the Track and Trace token
+		 *
+		 * @return string
+		 */
+		public function getTrackTraceTokenAttribute(): string
+		{
+			return md5( json_encode( ['order_id' => $this->id, 'customer_id' => $this->customer->id ] ) );
+		}
+
         /**
          * Return the next order number
          *

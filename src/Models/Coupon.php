@@ -55,7 +55,7 @@
             'bought' => 1,
             'redeemed' => 2,
             'remaining' => 3,
-            'earned' => 4,
+            'earned' => 4
         ];
 
         /**
