@@ -205,7 +205,13 @@
             //check if we have a coupon that offers free shipping
             foreach( $this->get('discounts', []) as $discount ){
                 if( $discount['free_shipping'] || $discount['free_shipping'] == 1 ){
-                    return true;
+                    if ( isset( $discount['minimal_amount'] ) && !empty( $discount['minimal_amount'] ) ) {
+                        if( $this->get_subtotal_without_gift_certificates() > $discount['minimal_amount'] ) {
+                            return true;
+                        } 
+                    } else {
+                        return true;
+                    }
                 }
             }
 
@@ -279,6 +285,7 @@
                 'free_shipping' => $coupon->free_shipping,
                 'gift_certificate' => $coupon->is_gift_certificate,
                 'coupon_campaign_id' => $coupon->coupon_campaign_id,
+                'minimal_amount' => $coupon->minimal_amount,
             ];
 
             //add it as a json to the order:
