@@ -618,6 +618,19 @@
             return 'badge-'.str_replace( '_', '-', $this->shipping_key );
         }
 
+		/**
+		 * Get the label status attribute, a backwards compatibility thing
+		 *
+		 * @return string
+		 */
+		public function getLabelStatusAttribute( $value = null ): string {
+			if( is_null( $value ) && !property_exists( $this, 'label_status' ) ) {
+				return 'printed';
+			}
+
+			return $this->label_status;
+		}
+
 
         /**
          * Does this order have a label?
@@ -626,7 +639,10 @@
          */
         public function getHasLabelAttribute()
         {
-            if( !is_null( $this->label_path ) && $this->label_path != '' ){
+            if( 
+				!is_null( $this->label_path ) && $this->label_path != '' && 
+				( $this->label_status == 'created' || $this->label_status == 'printed' ) 
+			){
                 return true;
             }
 
