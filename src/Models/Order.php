@@ -623,12 +623,12 @@
 		 *
 		 * @return string
 		 */
-		public function getLabelStatusAttribute( $value = null ): string {
+		public function getLabelStatusAttribute( $value = null ): ?string {
 			if( is_null( $value ) && !property_exists( $this, 'label_status' ) ) {
 				return 'printed';
 			}
 
-			return $this->label_status;
+			return $value;
 		}
 
 
