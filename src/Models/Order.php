@@ -158,6 +158,16 @@
             return false;
         }
 
+		/**
+		 * See if this order is eligeable for editting the shipping date
+		 *
+		 * @return boolean
+		 */
+		public function has_editable_shipping_date(): bool {	
+			$cut_off = Carbon::yesterday('Europe/Amsterdam')->startOfDay()->timestamp;
+			return ( $this->delivery_day >= $cut_off && $this->shipping_key !== 'digital-shipping' );
+		}
+
         
         /**
          * Return the orders' totals
