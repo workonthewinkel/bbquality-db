@@ -164,8 +164,12 @@
 		 * @return boolean
 		 */
 		public function has_editable_shipping_date(): bool {	
-			$cut_off = Carbon::yesterday('Europe/Amsterdam')->startOfDay()->timestamp;
-			return ( $this->delivery_day >= $cut_off && $this->shipping_key !== 'digital-shipping' );
+			$cut_off = Carbon::tomorrow('Europe/Amsterdam')->startOfDay()->timestamp;
+			return ( 
+				$this->delivery_day >= $cut_off && 
+				$this->shipping_key !== 'digital-shipping' &&
+				$this->shipping_key !== 'combine'
+			);
 		}
 
         
