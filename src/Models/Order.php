@@ -169,7 +169,8 @@
 				$this->delivery_day >= $cut_off && 
 				$this->shipping_key !== 'digital-shipping' &&
 				$this->shipping_key !== 'combine' &&
-                count( $this->combined_orders ) == 0
+                count( $this->combined_orders ) == 0 &&
+                empty( $this->label_path )
 			);
 		}
 
