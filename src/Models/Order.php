@@ -662,9 +662,9 @@
 				return 'chillbill';
 			
 			}else if(
-				$this->shipping_key == 'day-delivery-soocool' ||
-				$this->shipping_key == 'evening-delivery-soocool' || 
-				$this->shipping_key == 'soocool-flanders'
+				$this->shipping_key === 'day-delivery-soocool' ||
+				$this->shipping_key === 'evening-delivery-soocool' || 
+				$this->shipping_key === 'soocool-flanders'
 			){
 				return 'soocool';
 			}
