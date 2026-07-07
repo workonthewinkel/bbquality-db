@@ -102,7 +102,6 @@
         /**
          * Return all openstates
          *
-         * @param string $state
          * @return array
          */
         public static function openStates( )
