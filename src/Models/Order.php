@@ -158,22 +158,6 @@
             return false;
         }
 
-		/**
-		 * See if this order is eligeable for editting the shipping date
-		 *
-		 * @return boolean
-		 */
-		public function has_editable_shipping_date(): bool {	
-			$cut_off = Carbon::tomorrow('Europe/Amsterdam')->startOfDay()->timestamp;
-			return ( 
-				$this->delivery_day >= $cut_off && 
-				$this->shipping_key !== 'digital-shipping' &&
-				$this->shipping_key !== 'combine' &&
-                count( $this->combined_orders ) == 0 &&
-                empty( $this->label_path )
-			);
-		}
-
         
         /**
          * Return the orders' totals
@@ -385,7 +369,7 @@
                     return 'success';
                     break;
                 case 'canceled':
-                case 'cancelled': 
+                case 'cancelled':
                     return 'danger';
                     break;
                 case 'on-hold':
@@ -634,6 +618,7 @@
             return 'badge-'.str_replace( '_', '-', $this->shipping_key );
         }
 
+
         /**
          * Does this order have a label?
          *
@@ -676,6 +661,12 @@
             ){
 				return 'chillbill';
 			
+			}else if(
+				$this->shipping_key == 'day-delivery-soocool' ||
+				$this->shipping_key == 'evening-delivery-soocool' || 
+				$this->shipping_key == 'soocool-flanders'
+			){
+				return 'soocool';
 			}
 
             return 'bbquality';
@@ -742,40 +733,6 @@
             }
             return $points;
         }
-
-		/**
-		 * Returns the track & trace link for this model
-		 *
-		 * @return string
-		 */
-		public function getTrackTraceLinkAttribute(): string 
-		{
-			$url = '';
-
-			// Only run this in the WordPress context:
-			if( function_exists( 'get_site_url' ) ){
-
-				$url = \get_site_url() . '/track-en-trace';
-				$url = \add_query_arg([
-					'order_number' => $this->order_number,
-					'token' => $this->track_trace_token
-				], $url );
-			}
-
-			return $url;
-		}
-
-
-		/**
-		 * Return the Track and Trace token
-		 *
-		 * @return string
-		 */
-		public function getTrackTraceTokenAttribute(): string
-		{
-			return md5( json_encode( ['order_id' => $this->id, 'customer_id' => $this->customer->id ] ) );
-		}
-
         /**
          * Return the next order number
          *
