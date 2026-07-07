@@ -100,6 +100,18 @@
         }
 
         /**
+         * Return all openstates
+         *
+         * @param string $state
+         * @return array
+         */
+        public static function openStates( )
+        {
+            return [ self::STATES[ 'open' ],self::STATES[ 'in_progress' ],self::STATES[ 'retry' ] ];
+        }
+
+
+        /**
          * Create a job if it doesn't exist yet
          *
          * @param Array $data
