@@ -345,6 +345,24 @@
                 case 'day-delivery-chill-bill' :
                     return 'chill-bill-day';
                 break;
+                case 'chill-bill-flanders' :
+                    return 'chill-bill-flanders';
+                break;
+                case 'chill-bill-walloon' :
+                    return 'chill-bill-walloon';
+                break;
+                case 'soocool-flanders' :
+                    return 'soocool-flanders';
+                break;
+                case 'soocool-walloon' :
+                    return 'soocool-walloon';
+                break;
+                case 'day-delivery-soocool' :
+                    return 'soocool-day';
+                break;
+                case 'evening-delivery-soocool' :
+                    return 'soocool-evening';
+                break;
                 default:
                     return $this->shipping_key;
                 break;
