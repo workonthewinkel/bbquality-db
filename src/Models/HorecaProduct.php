@@ -19,6 +19,7 @@ class HorecaProduct extends Model
         'stock_threshold' => 'integer',
         'portion' => 'integer',
         'post_id' => 'integer',
+        'fresh' => 'boolean',
     ];
 
     protected $appends = [
@@ -37,12 +38,25 @@ class HorecaProduct extends Model
 
         static::creating(function (HorecaProduct $product) {
             $product->type = 'horeca';
+            if ($product->fresh === null) {
+                $product->fresh = false;
+            }
         });
     }
 
     public function scopeHoreca(Builder $query): Builder
     {
         return $query->where('type', 'horeca');
+    }
+
+    public function scopeIsFresh(Builder $query): Builder
+    {
+        return $query->where('fresh', true);
+    }
+
+    public function scopeIsFrozen(Builder $query): Builder
+    {
+        return $query->where('fresh', false);
     }
 
     public function getAverageWeightAttribute(): ?float
