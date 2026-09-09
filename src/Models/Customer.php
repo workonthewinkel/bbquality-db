@@ -66,7 +66,7 @@
                         ->where('status', '!=', 'new' )
                         ->where('status', '!=', 'open' )
                         ->whereIn( 'customer_id', $customers )
-                        ->with('rows','payment')    
+                        ->with(['rows', 'payment', 'customer', 'coupons'])
                         ->orderBy('created_at', 'DESC');
 
             return $orders;
