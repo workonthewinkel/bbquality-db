@@ -23,6 +23,13 @@
          */
         protected $table = 'orders';
 
+        /**
+         * Request-level cache for getTotals()
+         *
+         * @var array
+         */
+        protected $cached_totals = [];
+
 
         /**
          * Guarded fields
@@ -169,7 +176,7 @@
 				$this->delivery_day >= $cut_off && 
 				$this->shipping_key !== 'digital-shipping' &&
 				$this->shipping_key !== 'combine' &&
-                count( $this->combined_orders ) == 0 &&
+                count( $this->combined_with ) == 0 &&
                 empty( $this->label_path )
 			);
 		}
@@ -182,6 +189,11 @@
          */
         public function getTotals( $raw = false )
         {
+            $cache_key = $raw ? 'raw' : 'formatted';
+            if( isset( $this->cached_totals[ $cache_key ] ) ){
+                return $this->cached_totals[ $cache_key ];
+            }
+
             $subtotal = 0;
             $vat = 0;
             $vatHigh = 0;
@@ -228,7 +240,7 @@
 
             //if we want just the raw numbers:
             if( $raw ){
-                return [
+                return $this->cached_totals[ $cache_key ] = [
                     'subtotal' => $subtotal,
                     'subtotal-high' => $subtotalHigh,
                     'subtotal-low' => $subtotalLow,
@@ -264,7 +276,7 @@
             }
 
             $totals['Totaal'] = Price::format( $total );
-            return $totals;
+            return $this->cached_totals[ $cache_key ] = $totals;
             
         }
 
@@ -545,19 +557,50 @@
         public function getApiCertificatesAttribute()
         {
             $total = 0;
+            $gift_discounts = [];
+
             foreach( $this->discounts as $discount ){
-                if( $discount['gift_certificate'] == true ){
-                    $id = $discount['id'];
-                    $coupon = Coupon::find($id);
-                    if ( !is_null( $coupon ) && !is_null($coupon->coupon_campaign_id)) {
-                        $campaign = CouponCampaign::find( $coupon->coupon_campaign_id );
-                        if ( !is_null( $campaign ) && !is_null($campaign) && $campaign->source == 'api' ) {
-                            $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
-                            $total += $discount[ $key ] ?? 0;
-                        }
-                    }
+                if( !empty( $discount['gift_certificate'] ) ){
+                    $gift_discounts[] = $discount;
                 }
             }
+
+            if( empty( $gift_discounts ) ){
+                return 0;
+            }
+
+            $coupon_ids = array_values( array_unique( array_filter( array_map( function( $discount ){
+                return $discount['id'] ?? null;
+            }, $gift_discounts ) ) ) );
+
+            if( empty( $coupon_ids ) ){
+                return 0;
+            }
+
+            if( $this->relationLoaded( 'coupons' ) ){
+                $coupons = $this->coupons->whereIn( 'id', $coupon_ids )->keyBy( 'id' );
+            }else{
+                $coupons = Coupon::whereIn( 'id', $coupon_ids )->get()->keyBy( 'id' );
+            }
+
+            $campaign_ids = $coupons->pluck( 'coupon_campaign_id' )->filter()->unique()->values()->all();
+            $campaigns = empty( $campaign_ids )
+                ? collect()
+                : CouponCampaign::whereIn( 'id', $campaign_ids )->get()->keyBy( 'id' );
+
+            foreach( $gift_discounts as $discount ){
+                $coupon = $coupons->get( $discount['id'] ?? null );
+                if( is_null( $coupon ) || is_null( $coupon->coupon_campaign_id ) ){
+                    continue;
+                }
+
+                $campaign = $campaigns->get( $coupon->coupon_campaign_id );
+                if( !is_null( $campaign ) && $campaign->source == 'api' ){
+                    $key = ( isset( $discount['calculated_amount'] ) ? 'calculated_amount' : 'amount' );
+                    $total += $discount[ $key ] ?? 0;
+                }
+            }
+
             return $total;
         }
 
@@ -727,12 +770,50 @@
         }
 
         /**
+         * Printable gift-certificate coupons for this order.
+         * Uses the eager-loaded coupons relation when available.
+         *
+         * @return \Illuminate\Support\Collection
+         */
+        public function getPrintableCoupons()
+        {
+            $states = [
+                Coupon::STATES['bought'],
+                Coupon::STATES['remaining'],
+                Coupon::STATES['earned'],
+            ];
+
+            if( $this->relationLoaded( 'coupons' ) ){
+                return $this->coupons->filter( function( $coupon ) use ( $states ) {
+                    $pivot_status = (int) ( $coupon->pivot->status ?? 0 );
+                    return in_array( $pivot_status, $states, true );
+                })->values();
+            }
+
+            return $this->coupons()->printable();
+        }
+
+
+        /**
+         * Whether this order has printable gift certificates.
+         *
+         * @return bool
+         */
+        public function getHasPrintableCouponsAttribute(): bool
+        {
+            return $this->getPrintableCoupons()->isNotEmpty();
+        }
+
+
+        /**
          * Return the certificate url   
          *
          * @return void
          */
         public function getCertificatesUrlAttribute()
         {
+            // Keep using printable() so the download token stays compatible
+            // with Endpoints\Certificate (same json_encode payload).
             $token = \md5(\json_encode( $this->coupons()->printable() ) );
             return '/download-cadeaubonnen?order='.$this->id.'&token='.$token;
         }
