@@ -263,8 +263,11 @@
                     break;
                 case 'refund':
                 case 'chargedback':
-                case 'partial_refunded':
                     return 'refund';
+                    break;
+                case 'partial_refunded':
+                    return 'partially_refunded';
+                    break;
                 default: 
                     return $status;
                     break;

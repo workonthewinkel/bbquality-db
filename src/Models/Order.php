@@ -121,6 +121,7 @@
         {            
             switch( $this->payment->status ){
                 case 'paid':
+                case 'partial_refunded':
                     $this->status = 'processing';
                     break;
                 case 'pending':
@@ -133,7 +134,6 @@
                     break;
                 case 'refund':
                 case 'chargedback':
-                case 'partial_refunded':
                     $this->status = 'refund';
                     break;
                 default:
@@ -665,6 +665,7 @@
                 'failed'     => "Mislukt",
                 'completed'  => "Voltooid",
                 'refunded'   => '(deels) terugbetaald',
+                'refund'     => '(deels) terugbetaald'
             ];
 
             return $states[ $this->status ];
