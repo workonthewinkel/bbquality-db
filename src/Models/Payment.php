@@ -296,6 +296,8 @@
                     break;
                 case 'refund':
                     return 'Teruggestort';
+                case 'partially_refunded':
+                    return 'Deels Teruggestort';
             }   
         }
         
