@@ -62,6 +62,19 @@
             return $this->hasOne( Loyalty::class, 'user_id', 'ID' );
         }
 
+
+        /**
+         * An account maps 1:1 to this WordPress user
+         *
+         * @return Account
+         */
+        public function account()
+        {
+            $localKey = array_key_exists( 'ID', $this->getAttributes() ) ? 'ID' : $this->getKeyName();
+
+            return $this->hasOne( Account::class, 'user_id', $localKey );
+        }
+
 		/**
 		 * A user has many reviews
 		 *

@@ -224,15 +224,17 @@
             //shipping & payment costs, also add their vat:
             $shipping = $this->shipping['price_raw'] ?? 0;
             $transaction_cost = $this->payment->transaction_cost ?? 0;
+            $fuel_surcharge = (float) ( $this->shipping['fuel_surcharge'] ?? 0 );
             $vat += Price::vat( $shipping, 0.21 );
             $vat += Price::vat( $transaction_cost, 0.21 );
+            $vat += Price::vat( $fuel_surcharge, 0.21 );
 
             //discount & gift certificates APPLIED
             $discount = $this->discount_total * -1;
             $gift_certificates = $this->gift_certificates_total * -1;
             $exact_certificate_rectification = $this->api_certificates * -1;
 
-            $total = $subtotal + $shipping + $discount + $gift_certificates + $transaction_cost;
+            $total = $subtotal + $shipping + $discount + $gift_certificates + $transaction_cost + $fuel_surcharge;
 
             if( $total < 0 ){
                 $total = 0;
@@ -245,6 +247,7 @@
                     'subtotal-high' => $subtotalHigh,
                     'subtotal-low' => $subtotalLow,
                     'shipping' => $shipping,
+                    'fuel-surcharge' => $fuel_surcharge,
                     'transaction-cost' => $transaction_cost,
                     'vat' => $vat,
                     'vat-high' => $vatHigh,
@@ -262,6 +265,10 @@
                 'Waarvan BTW'       => Price::format( $vat ),
                 'Verzendkosten'     => Price::format( $shipping )
             ];
+
+            if( $fuel_surcharge > 0 ){
+                $totals['Brandstoftoeslag'] = Price::format( $fuel_surcharge );
+            }
 
             if( $transaction_cost !== 0 ){
                 $totals['Transactiekosten'] = Price::format( $transaction_cost );
